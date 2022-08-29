@@ -22,14 +22,12 @@ public class PaymentConsumerController {
     private PaymentProviderClient paymentProviderClient;
 
     @Autowired
-    private void setDependencies(PaymentProviderClient paymentProviderClient){
+    private void setDependencies(PaymentProviderClient paymentProviderClient) {
         this.paymentProviderClient = paymentProviderClient;
     }
 
     @GetMapping("/consumerTest")
-    String test(){
+    String test() {
         return paymentProviderClient.test();
     }
-
-
 }
