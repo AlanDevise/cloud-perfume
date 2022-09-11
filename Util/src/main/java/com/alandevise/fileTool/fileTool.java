@@ -103,14 +103,14 @@ public class fileTool {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 Files.delete(file);
-                Log.info(file+" has been deleted.");
+                Log.info(file+" 已被删除");
                 return super.visitFile(file, attrs);
             }
 
             @Override
             public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
                 Files.delete(dir);
-                Log.info(dir+" has been deleted.");
+                Log.info(dir+" 已被删除");
                 return super.postVisitDirectory(dir, exc);
             }
         });
