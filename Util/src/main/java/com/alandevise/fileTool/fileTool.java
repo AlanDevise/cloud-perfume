@@ -6,12 +6,13 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 
 /**
  * @Filename: fileTool.java
  * @Package: com.alandevise
  * @Version: V1.0.0
- * @Description: 1.
+ * @Description: 1. 针对文件的处理方法集合
  * @Author: Alan Zhang [initiator@alandevise.com]
  * @Date: 2022年09月11日 13:43
  */
@@ -92,5 +93,26 @@ public class fileTool {
         } catch (IOException exception) {
             Log.info("[EXCEPTION] 删除文件操作异常");
         }
+    }
+
+    /*
+    * [WARNING] 极为危险的操作，逐级删除路径下所有的文件及文件夹，且不可恢复，慎用
+    * */
+    private static void DeleteVariousFiles(String TargetURI) throws IOException {
+        Files.walkFileTree(Paths.get(TargetURI), new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.delete(file);
+                Log.info(file+" has been deleted.");
+                return super.visitFile(file, attrs);
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                Files.delete(dir);
+                Log.info(dir+" has been deleted.");
+                return super.postVisitDirectory(dir, exc);
+            }
+        });
     }
 }
