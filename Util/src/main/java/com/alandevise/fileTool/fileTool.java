@@ -98,7 +98,7 @@ public class fileTool {
     /*
     * [WARNING] 极为危险的操作，逐级删除路径下所有的文件及文件夹，且不可恢复，慎用
     * */
-    private static void DeleteVariousFiles(String TargetURI) throws IOException {
+    public static void DeleteVariousFiles(String TargetURI) throws IOException {
         Files.walkFileTree(Paths.get(TargetURI), new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
@@ -112,6 +112,25 @@ public class fileTool {
                 Files.delete(dir);
                 Log.info(dir+" 已被删除");
                 return super.postVisitDirectory(dir, exc);
+            }
+        });
+    }
+
+    /*
+    * 将文件夹复制至另一个路径
+    * */
+    private static void CopyFolder(String source, String target) throws IOException {
+        Files.walk(Paths.get(source)).forEach(path -> {
+            try {
+                String targetName = path.toString().replace(source, target);
+                // 是目录
+                if (Files.isDirectory(path)) {
+                    Files.createDirectory(Paths.get(targetName));
+                } else if (Files.isRegularFile(path)) {
+                    Files.copy(path, Paths.get(targetName));
+                }
+            } catch (IOException exception) {
+                exception.printStackTrace();
             }
         });
     }
