@@ -1,9 +1,14 @@
 server:
-  port: 9001
+  port: 1118
 
 spring:
   application:
-    name: cloud-BI-Service
+    name: super-server-1118
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        enabled: true
   datasource:
     # 当前数据源操作类型
     type: com.alibaba.druid.pool.DruidDataSource
@@ -25,6 +30,15 @@ spring:
         max-wait: -1
         max-idle: 8
         min-idle: 0
+logging:
+  level:
+    root: info
+    org.springframework: info
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 mybatis:
   mapperLocations: classpath:mapper/*.xml
