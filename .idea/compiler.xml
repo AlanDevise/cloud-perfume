@@ -7,11 +7,15 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="Spring-boot-MQTT" />
         <module name="Payment-Provider-9001" />
         <module name="Payment-Consumer-9002" />
         <module name="Super-Server-1118" />
         <module name="Payment-Provider-9003" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Netty-MQTT-Client" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
