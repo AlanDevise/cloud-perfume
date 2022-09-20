@@ -44,7 +44,7 @@ public class SwaggerConfig {
                 //版本号
                 .version("1.0")
                 //描述
-                .description("SuperServer系统API描述")
+                .description("General Server 服务的API文档")
                 .build();
     }
 }
