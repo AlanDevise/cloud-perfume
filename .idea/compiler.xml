@@ -10,9 +10,14 @@
         <module name="Util" />
         <module name="Payment-Provider-9001" />
         <module name="Payment-Consumer-9002" />
-        <module name="Super-Server-1118" />
         <module name="Payment-Provider-9003" />
+        <module name="General-Server-1118" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Netty-MQTT-Client" target="1.8" />
+      <module name="Spring-boot-MQTT" target="1.8" />
+      <module name="Super-Server-1118" target="8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

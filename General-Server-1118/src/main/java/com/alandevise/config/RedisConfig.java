@@ -1,7 +1,7 @@
-package com.alandevise.superserver.config;
+package com.alandevise.config;
 
-import com.alandevise.superserver.util.IGlobalCache;
-import com.alandevise.superserver.util.Impl.AppRedisCacheManager;
+import com.alandevise.util.IGlobalCache;
+import com.alandevise.util.Impl.AppRedisCacheManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
@@ -19,11 +19,11 @@ import redis.clients.jedis.JedisPoolConfig;
 
 /**
  * @Filename: RedisConfig.java
- * @Package: com.alandevise.superserver.config
+ * @Package: com.alandevise.config
  * @Version: V1.0.0
  * @Description: 1.
  * @Author: Alan Zhang [initiator@alandevise.com]
- * @Date: 2022年08月27日 23:57
+ * @Date: 2022-09-20 15:30
  */
 
 @EnableCaching

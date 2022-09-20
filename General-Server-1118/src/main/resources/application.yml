@@ -2,13 +2,10 @@ server:
   port: 1118
 
 spring:
+
   application:
-    name: super-server-1118
-  cloud:
-    nacos:
-      discovery:
-        server-addr: 127.0.0.1:8848
-        enabled: true
+    name: General-Server-Service
+
   datasource:
     # 当前数据源操作类型
     type: com.alibaba.druid.pool.DruidDataSource
@@ -18,11 +15,13 @@ spring:
     url: jdbc:mysql://localhost:3306/AlanDeviseDatabase?useUnicode=true&characterEncoding=utf8&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: AlanDevise2020
+
   redis:
     database: 0
     host: 127.0.0.1
     port: 6379
-    password: AlanDevise2020 # 如果未单独配置默认为空即可
+    password:
+#    password: AlanDevise2020 # 如果未单独配置默认为空即可
     timeout: 1000
     jedis:
       pool:
@@ -30,15 +29,6 @@ spring:
         max-wait: -1
         max-idle: 8
         min-idle: 0
-logging:
-  level:
-    root: info
-    org.springframework: info
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
 mybatis:
   mapperLocations: classpath:mapper/*.xml

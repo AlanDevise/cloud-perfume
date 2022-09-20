@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>Super-Server-1118</artifactId>
+    <artifactId>General-Server-1118</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -33,7 +33,7 @@
         <!-- [REQUIRED] Druid -->
         <dependency>
             <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-starter</artifactId>
+            <artifactId>druid</artifactId>
         </dependency>
 
         <!-- [REQUIRED] JDBC -->
@@ -96,12 +96,6 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
-        </dependency>
-
-        <!-- Pdf box -->
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>pdfbox</artifactId>
         </dependency>
 
     </dependencies>
