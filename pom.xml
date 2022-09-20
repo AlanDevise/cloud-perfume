@@ -11,8 +11,7 @@
         <module>Payment-Provider-9001</module>
         <module>Payment-Consumer-9002</module>
         <module>Payment-Provider-9003</module>
-        <module>Super-Server-1118</module>
-        <module>Spring-boot-MQTT</module>
+        <module>General-Server-1118</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -39,6 +38,7 @@
         <spring-boot-starter-actuator.version>2.4.3</spring-boot-starter-actuator.version>
         <pdfbox.version>2.0.26</pdfbox.version>
         <fastjson.version>1.2.72</fastjson.version>
+        <openfeign.version>2.2.5.RELEASE</openfeign.version>
     </properties>
 
     <dependencyManagement>
@@ -155,6 +155,13 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
                 <version>${fastjson.version}</version>
+            </dependency>
+
+            <!-- [REQUIRED] OpenFeign -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-openfeign</artifactId>
+                <version>${openfeign.version}</version>
             </dependency>
 
         </dependencies>

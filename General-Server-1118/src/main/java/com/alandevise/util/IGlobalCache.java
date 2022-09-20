@@ -1,4 +1,4 @@
-package com.alandevise.superserver.util;
+package com.alandevise.util;
 
 import org.springframework.data.redis.core.RedisTemplate;
 
@@ -8,11 +8,11 @@ import java.util.Set;
 
 /**
  * @Filename: IGlobalCache.java
- * @Package: com.alandevise.superserver.util
+ * @Package: com.alandevise.util
  * @Version: V1.0.0
  * @Description: 1.
  * @Author: Alan Zhang [initiator@alandevise.com]
- * @Date: 2022年08月27日 23:54
+ * @Date: 2022-09-20 15:38
  */
 
 public interface IGlobalCache {

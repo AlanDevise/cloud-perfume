@@ -1,4 +1,4 @@
-package com.alandevise.superserver.config;
+package com.alandevise.config;
 
 import io.swagger.annotations.Api;
 import org.springframework.context.annotation.Bean;
@@ -14,11 +14,11 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * @Filename: SwaggerConfig.java
- * @Package: com.alandevise.superserver.config
+ * @Package: com.alandevise.config
  * @Version: V1.0.0
  * @Description: 1.
  * @Author: Alan Zhang [initiator@alandevise.com]
- * @Date: 2022年08月27日 23:58
+ * @Date: 2022-09-20 15:23
  */
 
 @EnableSwagger2

@@ -1,12 +1,12 @@
-package com.alandevise.superserver.util;
+package com.alandevise.util;
 
 /**
  * @Filename: IpV4LongUtils.java
- * @Package: com.alandevise.superserver.com.alandevise.superserver.util
+ * @Package: com.alandevise.util
  * @Version: V1.0.0
- * @Description: 1. 转换IP地址为Long
+ * @Description: 1.
  * @Author: Alan Zhang [initiator@alandevise.com]
- * @Date: 2022年08月27日 23:51
+ * @Date: 2022-09-20 15:41
  */
 
 public class IpV4LongUtils {
