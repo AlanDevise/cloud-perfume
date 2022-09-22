@@ -19,9 +19,8 @@ spring:
     # 密码
     password: AlanDevise2020
     druid:
+      # 关闭数据库连接空闲检测，频繁检测会降低性能
       test-while-idle: false
-
-
 
   redis:
     database: 0
