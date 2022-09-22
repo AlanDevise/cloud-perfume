@@ -3,7 +3,6 @@ package com.alandevise.dao;
 import com.alandevise.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
-import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,7 +18,6 @@ import java.util.List;
 
 //在对应的Mapper 上面继承基本的类 BaseMapper
 @Component
-@Mapper
 public interface UserMapper extends BaseMapper<User> {
     //所有的CRUD操作都已经编写完成
     //不需要像以前一样配置一大堆文件了
