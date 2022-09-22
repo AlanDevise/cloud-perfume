@@ -1,7 +1,7 @@
 package com.alandevise;
 
 import com.alandevise.entity.User;
-import com.alandevise.mapper.UserMapper;
+import com.alandevise.dao.UserMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +60,12 @@ public class MybatisPlusApplicationTests {
         // 注意：updateById   但是参数是一个 对象！
         int i = userMapper.updateById(user);
         System.out.println(i);
+    }
+
+    @Test
+    public void testSelect(){
+        List<User> users = userMapper.selectByName("Corrine");
+        System.out.println(users);
     }
 
 }

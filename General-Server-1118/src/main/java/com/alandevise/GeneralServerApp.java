@@ -18,7 +18,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients
-@MapperScan("com.alandevise.mapper")
+@MapperScan("com.alandevise.dao")
 public class GeneralServerApp {
     public static void main(String[] args) {
         SpringApplication.run(GeneralServerApp.class, args);

@@ -55,12 +55,6 @@
             <scope>test</scope>
         </dependency>
 
-<!--        &lt;!&ndash; [REQUIRED] Mybatis &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.mybatis.spring.boot</groupId>-->
-<!--            <artifactId>mybatis-spring-boot-starter</artifactId>-->
-<!--        </dependency>-->
-
         <!-- [REQUIRED] Mybatis Plus -->
         <dependency>
             <groupId>com.baomidou</groupId>
