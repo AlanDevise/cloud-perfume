@@ -33,7 +33,7 @@
         <!-- [REQUIRED] Druid -->
         <dependency>
             <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
+            <artifactId>druid-spring-boot-starter</artifactId>
         </dependency>
 
         <!-- [REQUIRED] JDBC -->
@@ -59,7 +59,6 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.5.2</version>
         </dependency>
 
         <!-- [REQUIRED] Redis -->
