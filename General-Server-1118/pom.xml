@@ -33,7 +33,7 @@
         <!-- [REQUIRED] Druid -->
         <dependency>
             <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
+            <artifactId>druid-spring-boot-starter</artifactId>
         </dependency>
 
         <!-- [REQUIRED] JDBC -->
@@ -48,10 +48,17 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
-        <!-- [REQUIRED] Mybatis -->
+        <!-- [REQUIRED] Test -->
         <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- [REQUIRED] Mybatis Plus -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
 
         <!-- [REQUIRED] Redis -->
