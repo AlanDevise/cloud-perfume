@@ -39,6 +39,7 @@
         <pdfbox.version>2.0.26</pdfbox.version>
         <fastjson.version>1.2.72</fastjson.version>
         <openfeign.version>2.2.5.RELEASE</openfeign.version>
+        <mybatis-plus-boot-starter.version>3.5.2</mybatis-plus-boot-starter.version>
     </properties>
 
     <dependencyManagement>
@@ -98,6 +99,13 @@
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
                 <version>${mybatis.spring.boot.version}</version>
+            </dependency>
+
+            <!-- [REQUIRED] Mybatis Plus -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus-boot-starter.version}</version>
             </dependency>
 
             <dependency>

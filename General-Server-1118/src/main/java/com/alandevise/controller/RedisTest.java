@@ -40,9 +40,11 @@ public class RedisTest {
 
         iGlobalCache.set("key2", "value3"); // set命令，设置redis键值对
 
-        iGlobalCache.lSetAll("list", Arrays.asList("hello", "redis"));
+        iGlobalCache.lSetAll("list", Arrays.asList("hello", "redis"));  // 一次set 多个 key-value 键值对
 
         List<Object> list = iGlobalCache.lGet("list", 0, -1);
+
+        System.out.println(list);
 
         log.info(iGlobalCache.get("key2").toString());
 

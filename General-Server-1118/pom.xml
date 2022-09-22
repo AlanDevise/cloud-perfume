@@ -48,10 +48,24 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
-        <!-- [REQUIRED] Mybatis -->
+        <!-- [REQUIRED] Test -->
         <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+<!--        &lt;!&ndash; [REQUIRED] Mybatis &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.mybatis.spring.boot</groupId>-->
+<!--            <artifactId>mybatis-spring-boot-starter</artifactId>-->
+<!--        </dependency>-->
+
+        <!-- [REQUIRED] Mybatis Plus -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>3.5.2</version>
         </dependency>
 
         <!-- [REQUIRED] Redis -->
