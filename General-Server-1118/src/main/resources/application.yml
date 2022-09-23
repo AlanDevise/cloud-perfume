@@ -41,6 +41,11 @@ spring:
       # 设置控制台输出高亮
       enabled: always
 
+  mvc:
+    pathmatch:
+      # 解决Swagger3找不到路径
+      matching-strategy: ant_path_matcher
+
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
   configuration:
