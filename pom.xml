@@ -18,12 +18,22 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+
 <!--        <spring-cloud-alibaba-dependencies.version>2.1.0.RELEASE</spring-cloud-alibaba-dependencies.version>-->
-        <spring-cloud-alibaba-dependencies.version>2.2.5.RELEASE</spring-cloud-alibaba-dependencies.version>
+<!--        <spring-cloud-alibaba-dependencies.version>2.2.5.RELEASE</spring-cloud-alibaba-dependencies.version>-->
+        <spring-cloud-alibaba-dependencies.version>2021.1</spring-cloud-alibaba-dependencies.version>
+<!--        <spring-cloud-alibaba-dependencies.version>2021.0.1.0</spring-cloud-alibaba-dependencies.version>-->
+
 <!--        <spring-cloud-dependencies.version>Greenwich.RELEASE</spring-cloud-dependencies.version>-->
-        <spring-cloud-dependencies.version>Hoxton.SR8</spring-cloud-dependencies.version>
+<!--        <spring-cloud-dependencies.version>Hoxton.SR8</spring-cloud-dependencies.version>-->
+        <spring-cloud-dependencies.version>2020.0.1</spring-cloud-dependencies.version>
+<!--        <spring-cloud-dependencies.version>2021.0.1</spring-cloud-dependencies.version>-->
+
 <!--        <spring-boot-dependencies.version>2.1.3.RElEASE</spring-boot-dependencies.version>-->
-        <spring-boot-dependencies.version>2.3.2.RELEASE</spring-boot-dependencies.version>
+<!--        <spring-boot-dependencies.version>2.3.2.RELEASE</spring-boot-dependencies.version>-->
+        <spring-boot-dependencies.version>2.4.2</spring-boot-dependencies.version>
+<!--        <spring-boot-dependencies.version>2.6.3</spring-boot-dependencies.version>-->
+
         <junit.version>4.12</junit.version>
         <log4j.versioin>1.2.17</log4j.versioin>
         <lombok.version>1.16.18</lombok.version>
@@ -41,6 +51,7 @@
         <openfeign.version>2.2.5.RELEASE</openfeign.version>
         <mybatis-plus-boot-starter.version>3.5.2</mybatis-plus-boot-starter.version>
         <druid-spring-boot-starter.version>1.2.12</druid-spring-boot-starter.version>
+        <spring-cloud-loadbalancer.version>3.0.1</spring-cloud-loadbalancer.version>
     </properties>
 
     <dependencyManagement>
@@ -178,6 +189,13 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-openfeign</artifactId>
                 <version>${openfeign.version}</version>
+            </dependency>
+
+            <!-- [REQUIRED] Spring-loadbalancer, Spring cloud: Hoxton.M2 RELEASED版本之后不再使用Ribbon -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-loadbalancer</artifactId>
+                <version>${spring-cloud-loadbalancer.version}</version>
             </dependency>
 
         </dependencies>

@@ -21,6 +21,7 @@ import java.util.List;
 public interface UserMapper extends BaseMapper<User> {
     //所有的CRUD操作都已经编写完成
     //不需要像以前一样配置一大堆文件了
+    // [Alan COMMENT] Mybatis Plus 封装了部分常用sql，可直接调用，同时可以自行编写sql
 
     // 使函数参数对应xml中的参数wxNickName
     List<User> selectByName(@Param("name") String name);
