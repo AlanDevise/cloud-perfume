@@ -43,6 +43,7 @@ spring:
 
   mvc:
     pathmatch:
+      # 解决Swagger3找不到路径
       matching-strategy: ant_path_matcher
 
 mybatis-plus:
