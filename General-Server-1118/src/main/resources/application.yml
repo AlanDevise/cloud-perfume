@@ -41,6 +41,10 @@ spring:
       # 设置控制台输出高亮
       enabled: always
 
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
   configuration:
