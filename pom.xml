@@ -47,7 +47,7 @@
         <jedis.version>3.8.0</jedis.version>
         <spring-boot-starter-actuator.version>2.4.3</spring-boot-starter-actuator.version>
         <pdfbox.version>2.0.26</pdfbox.version>
-        <fastjson.version>1.2.72</fastjson.version>
+        <fastjson2.version>2.0.10</fastjson2.version>
         <openfeign.version>2.2.5.RELEASE</openfeign.version>
         <mybatis-plus-boot-starter.version>3.5.2</mybatis-plus-boot-starter.version>
         <druid-spring-boot-starter.version>1.2.12</druid-spring-boot-starter.version>
@@ -184,11 +184,11 @@
                 <version>${pdfbox.version}</version>
             </dependency>
 
-            <!-- [REQUIRED] Alibaba FastJson -->
+            <!-- [REQUIRED] Alibaba FastJson2 -->
             <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
-                <version>${fastjson.version}</version>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
+                <version>${fastjson2.version}</version>
             </dependency>
 
             <!-- [REQUIRED] OpenFeign -->

@@ -106,6 +106,12 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
+        <!-- [REQUIRED] Alibaba FastJson2 -->
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+        </dependency>
+
         <!-- [REQUIRED] Swagger -->
 <!--        <dependency>-->
 <!--            <groupId>io.springfox</groupId>-->
