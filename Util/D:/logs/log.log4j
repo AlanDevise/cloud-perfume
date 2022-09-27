@@ -1,6 +1,0 @@
-[DEBUG] 2022-09-26 23:08:30,800(0) --> [main] com.alibaba.excel.metadata.property.ExcelHeadProperty.<init>(ExcelHeadProperty.java:91): The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS  
-[DEBUG] 2022-09-26 23:08:30,813(13) --> [main] com.alibaba.excel.context.AnalysisContextImpl.<init>(AnalysisContextImpl.java:69): Initialization 'AnalysisContextImpl' complete  
-[DEBUG] 2022-09-26 23:08:30,917(117) --> [main] com.alibaba.excel.cache.selector.SimpleReadCacheSelector.readCache(SimpleReadCacheSelector.java:73): Use map cache.size:914  
-[DEBUG] 2022-09-26 23:08:31,132(332) --> [main] com.alibaba.excel.util.SheetUtils.match(SheetUtils.java:39): The first is read by default.  
-[DEBUG] 2022-09-26 23:08:31,133(333) --> [main] com.alibaba.excel.metadata.property.ExcelHeadProperty.<init>(ExcelHeadProperty.java:91): The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS  
-[DEBUG] 2022-09-26 23:08:31,133(333) --> [main] com.alibaba.excel.context.AnalysisContextImpl.currentSheet(AnalysisContextImpl.java:91): Began to read：ReadSheetHolder{sheetNo=0, sheetName='Sheet1'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@69a10787  
