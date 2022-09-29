@@ -55,6 +55,7 @@
         <druid-spring-boot-starter.version>1.2.12</druid-spring-boot-starter.version>
         <spring-cloud-loadbalancer.version>3.1.1</spring-cloud-loadbalancer.version>
         <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
+        <pagehelper.version>1.4.5</pagehelper.version>
     </properties>
 
     <dependencyManagement>
@@ -184,6 +185,13 @@
                 <groupId>org.apache.pdfbox</groupId>
                 <artifactId>pdfbox</artifactId>
                 <version>${pdfbox.version}</version>
+            </dependency>
+
+            <!-- [REQUIRED] Pagehelper -->
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${pagehelper.version}</version>
             </dependency>
 
             <!-- [REQUIRED] Alibaba FastJson2 -->

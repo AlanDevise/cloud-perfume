@@ -106,6 +106,12 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
+        <!-- [REQUIRED] Pagehelper -->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+        </dependency>
+
         <!-- [REQUIRED] Alibaba FastJson2 -->
         <dependency>
             <groupId>com.alibaba.fastjson2</groupId>
