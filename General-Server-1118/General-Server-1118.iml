@@ -185,6 +185,7 @@
     <orderEntry type="library" name="Maven: com.github.pagehelper:pagehelper:5.3.2" level="project" />
     <orderEntry type="library" name="Maven: com.github.jsqlparser:jsqlparser:4.5" level="project" />
     <orderEntry type="library" name="Maven: com.alibaba.fastjson2:fastjson2:2.0.10" level="project" />
+    <orderEntry type="library" name="Maven: cn.hutool:hutool-all:5.8.8" level="project" />
     <orderEntry type="library" name="Maven: io.springfox:springfox-boot-starter:3.0.0" level="project" />
     <orderEntry type="library" name="Maven: io.springfox:springfox-oas:3.0.0" level="project" />
     <orderEntry type="library" name="Maven: io.swagger.core.v3:swagger-annotations:2.1.2" level="project" />
