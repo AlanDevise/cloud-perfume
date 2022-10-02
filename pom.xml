@@ -55,7 +55,7 @@
         <druid-spring-boot-starter.version>1.2.12</druid-spring-boot-starter.version>
         <spring-cloud-loadbalancer.version>3.1.1</spring-cloud-loadbalancer.version>
         <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
-        <pagehelper.version>1.4.5</pagehelper.version>
+        <pagehelper.version>5.3.2</pagehelper.version>
         <hutool.version>5.8.8</hutool.version>
     </properties>
 
@@ -191,7 +191,7 @@
             <!-- [REQUIRED] Pagehelper -->
             <dependency>
                 <groupId>com.github.pagehelper</groupId>
-                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <artifactId>pagehelper</artifactId>
                 <version>${pagehelper.version}</version>
             </dependency>
 
