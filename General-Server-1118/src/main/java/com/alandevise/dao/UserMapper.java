@@ -25,6 +25,8 @@ public interface UserMapper extends BaseMapper<User> {
     // [Alan COMMENT] Mybatis Plus 封装了部分常用sql，可直接调用，同时可以自行编写sql
 
     // 使函数参数对应xml中的参数wxNickName
-    List<User> selectByName(@Param("name") String name);
+    User selectByName(@Param("name") String name);
+
+
 }
 

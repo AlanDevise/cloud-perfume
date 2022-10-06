@@ -4,10 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @Filename: LoginController.java
@@ -18,16 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
  * @Date: 2022年10月06日 11:41
  */
 
-@RestController
-@RequestMapping("/index")
+@Controller
 @Api(tags = "Login测试接口", value = "登录测试接口")
 @Slf4j
 public class LoginController {
 
-    @RequestMapping("/login")
+    @PostMapping("/toMain")
     @ApiOperation("Login基本操作测试-POST")
-    public String Login(){
+    public String toMain() {
         log.info("执行登录方法");
-        return "login.html";
+        return "redirect:main.html";
     }
 }

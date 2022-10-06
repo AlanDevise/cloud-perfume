@@ -64,7 +64,7 @@ public class MybatisPlusApplicationTests {
 
     @Test
     public void testSelect(){
-        List<User> users = userMapper.selectByName("Corrine");
+        User users = userMapper.selectByName("Corrine");
         System.out.println(users);
     }
 
