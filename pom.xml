@@ -57,6 +57,7 @@
         <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
         <pagehelper.version>5.3.2</pagehelper.version>
         <hutool.version>5.8.8</hutool.version>
+        <spring-security.version>2.6.3</spring-security.version>
     </properties>
 
     <dependencyManagement>
@@ -91,6 +92,13 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-actuator</artifactId>
                 <version>${spring-boot-starter-actuator.version}</version>
+            </dependency>
+
+            <!-- [REQUIRED] Spring security -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-security</artifactId>
+                <version>${spring-security.version}</version>
             </dependency>
 
             <dependency>
