@@ -12,7 +12,7 @@ import java.io.IOException;
  * @Filename: MyAuthenticationFailureHandler.java
  * @Package: com.alandevise.handler
  * @Version: V1.0.0
- * @Description: 1.
+ * @Description: 1. 登录失败处理器
  * @Author: Alan Zhang [initiator@alandevise.com]
  * @Date: 2022年10月07日 11:38
  */
