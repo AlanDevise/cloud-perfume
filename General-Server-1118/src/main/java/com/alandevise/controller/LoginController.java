@@ -26,4 +26,11 @@ public class LoginController {
         log.info("执行登录方法");
         return "redirect:main.html";
     }
+
+    @PostMapping("/toError")
+    @ApiOperation("Login基本操作测试-POST")
+    public String toError() {
+        log.info("因为登录失败，重新执行登录方法");
+        return "redirect:error.html";
+    }
 }

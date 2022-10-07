@@ -1,5 +1,7 @@
 package com.alandevise.config;
 
+import com.alandevise.handler.MyAuthenticationFailureHandler;
+import com.alandevise.handler.MyAuthenticationSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,17 +26,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // 表单提交
         http.formLogin()
+                .usernameParameter("username")
+                .passwordParameter("password")
                 // 当发现/login时，认为是登录，登录页中login action 同名
                 .loginProcessingUrl("/login")
                 // 自定义登录页
                 .loginPage("/login.html")
                 // 登录成功后跳转页面，Post请求
-                .successForwardUrl("/toMain");
+                // .successForwardUrl("/toMain")
+                // 登录成功后的处理器，不能和successForwardUrl共存
+                .successHandler(new MyAuthenticationSuccessHandler("https://www.baidu.com"))
+                // 登录失败后跳转页面，Post请求
+                // .failureForwardUrl("/toError");
+                // 登录失败后的处理器，不能和failureForwardUrl共存
+                .failureHandler(new MyAuthenticationFailureHandler("/error.html"));
 
         // 授权认证
         http.authorizeHttpRequests()
-                // 除了/login.html不需要认证
-                .antMatchers("/login.html").permitAll()
+                // 除了/login.html，/error.html不需要认证
+                .antMatchers("/login.html", "/error.html").permitAll()
                 // 所有请求都必须被验证，所有请求都必须登录之后访问
                 .anyRequest().authenticated();
 
