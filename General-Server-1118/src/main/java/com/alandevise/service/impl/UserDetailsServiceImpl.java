@@ -34,6 +34,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("用户名不存在");
         }
 
+        // 能够获取用户属性，如姓名，年龄，密码等
+        // users.getName();
+
         // 2. 如果存在，把查询出来的密码（注册时已经加密，不可能是明文）进行解析，或者直接把密码放入构造方法
         return new org.springframework.security.core.userdetails.User(
                 username,

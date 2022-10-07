@@ -33,18 +33,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 自定义登录页
                 .loginPage("/login.html")
                 // 登录成功后跳转页面，Post请求
-                // .successForwardUrl("/toMain")
+                 .successForwardUrl("/toMain")
                 // 登录成功后的处理器，不能和successForwardUrl共存
-                .successHandler(new MyAuthenticationSuccessHandler("https://www.baidu.com"))
+                // .successHandler(new MyAuthenticationSuccessHandler("https://www.baidu.com"))
                 // 登录失败后跳转页面，Post请求
-                // .failureForwardUrl("/toError");
+                 .failureForwardUrl("/toError");
                 // 登录失败后的处理器，不能和failureForwardUrl共存
-                .failureHandler(new MyAuthenticationFailureHandler("/error.html"));
+                // .failureHandler(new MyAuthenticationFailureHandler("/error.html"));
 
         // 授权认证
         http.authorizeHttpRequests()
                 // 除了/login.html，/error.html不需要认证
                 .antMatchers("/login.html", "/error.html").permitAll()
+                // 访问main1.html要求有admin权限，“admin”区分大小写
+                // .antMatchers("/main1.html").hasAuthority("admin")
+                // 访问main1.html要求有admin 或者adminN 权限
+                .antMatchers("/main1.html").hasAnyAuthority("admin", "adminN")
                 // 所有请求都必须被验证，所有请求都必须登录之后访问
                 .anyRequest().authenticated();
 
