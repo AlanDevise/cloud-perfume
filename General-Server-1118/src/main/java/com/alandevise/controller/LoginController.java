@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @Filename: LoginController.java
  * @Package: com.alandevise.controller
@@ -22,7 +24,7 @@ public class LoginController {
 
     @PostMapping("/toMain")
     @ApiOperation("Login基本操作测试-POST")
-    public String toMain() {
+    public String toMain(HttpServletRequest httpServletRequest) {
         log.info("执行登录方法");
         return "redirect:main.html";
     }

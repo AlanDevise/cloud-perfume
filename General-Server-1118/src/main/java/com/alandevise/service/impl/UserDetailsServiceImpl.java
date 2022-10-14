@@ -41,7 +41,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(
                 username,
                 users.getPassword(),
-                AuthorityUtils.commaSeparatedStringToAuthorityList("admin,normal"));
+                AuthorityUtils.commaSeparatedStringToAuthorityList("admin,normal,ROLE_admin"));
     }
 
 }
