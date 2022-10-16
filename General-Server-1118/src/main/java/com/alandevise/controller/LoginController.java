@@ -24,8 +24,9 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public class LoginController {
 
-    // @Secured("ROLE_admin")
-    @PreAuthorize("hasRole('abc')")
+    // @Secured("ROLE_admin")// 只有admin角色才能调用
+    // @PreAuthorize("hasRole('abc')")// 只有abc角色才能调用
+    @PreAuthorize("hasAuthority('admin')")// 只有admin权限才能调用
     @PostMapping("/toMain")
     @ApiOperation("Login基本操作测试-POST")
     public String toMain(HttpServletRequest httpServletRequest) {
