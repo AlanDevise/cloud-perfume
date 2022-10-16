@@ -21,7 +21,7 @@ import redis.clients.jedis.JedisPoolConfig;
  * @Filename: RedisConfig.java
  * @Package: com.alandevise.config
  * @Version: V1.0.0
- * @Description: 1.
+ * @Description: 1. Reids配置类
  * @Author: Alan Zhang [initiator@alandevise.com]
  * @Date: 2022-09-20 15:30
  */

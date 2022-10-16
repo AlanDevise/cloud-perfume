@@ -25,7 +25,6 @@ public class MySQLTest {
     @GetMapping("/getTest")
     @ApiOperation("MySQL基本操作测试-GET")
     public String FirstTest() {
-
-        return null;
+        return "运行到了Controller层";
     }
 }

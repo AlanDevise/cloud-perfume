@@ -1,16 +1,19 @@
 package com.alandevise.config;
 
 import com.alandevise.handler.MyAccessDeniedHandler;
-import com.alandevise.handler.MyAuthenticationFailureHandler;
-import com.alandevise.handler.MyAuthenticationSuccessHandler;
+import com.alandevise.service.impl.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 import javax.annotation.Resource;
+import javax.sql.DataSource;
 
 /**
  * @Filename: SecurityConfig.java
@@ -22,10 +25,20 @@ import javax.annotation.Resource;
  */
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Resource
     private MyAccessDeniedHandler myAccessDeniedHandler;
+
+    @Resource
+    private UserDetailsServiceImpl userDetailsService;
+
+    @Resource
+    private DataSource dataSource;
+
+    @Resource
+    private PersistentTokenRepository persistentTokenRepository;
 
     // 重写configure
     @Override
@@ -46,6 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // .failureHandler(new MyAuthenticationFailureHandler("/error.html"));
 
         // 授权认证
+        String ipAddress = "127.0.0.1";
         http.authorizeHttpRequests()
                 // 除了/login.html，/error.html不需要认证
                 .antMatchers("/login.html", "/error.html").permitAll()
@@ -54,8 +68,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 访问main1.html要求有admin 或者adminN 权限
                 // .antMatchers("/main1.html").hasAnyAuthority("admin", "adminN")
                 // 访问main1.html要求为abc角色
-                .antMatchers("/main1.html").hasRole("abc")
+                // .antMatchers("/main1.html").hasRole("abc")
                 // 所有请求都必须被验证，所有请求都必须登录之后访问
+                // .antMatchers("/swagger-ui/index.html").hasIpAddress("127.0.0.1")
                 .anyRequest().authenticated();
 
         // 关闭csrf防护
@@ -64,13 +79,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // 异常处理
         http.exceptionHandling()
                 // 无权限进入，跳转至accessDenied页面
-                .accessDeniedPage("/accessDenied.html");
-        // 无权限进入，返回json数据
-        // .accessDeniedHandler(myAccessDeniedHandler);
+                // .accessDeniedPage("/accessDenied.html");
+                // 无权限进入，返回json数据
+                .accessDeniedHandler(myAccessDeniedHandler);
+
+        // 记住我功能
+        http.rememberMe()
+                // 失效时间，单位秒，默认为2周
+                .tokenValiditySeconds(60)
+                // .rememberMeParameter()
+                // 自定义登录逻辑
+                .userDetailsService(userDetailsService)
+                // 持久层对象
+                .tokenRepository(persistentTokenRepository);
     }
 
     @Bean
     public PasswordEncoder getPw() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public PersistentTokenRepository getPersistentTokenRepository() {
+        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+        jdbcTokenRepository.setDataSource(dataSource);
+        // 自动建表，第一次启动需要，之后启动注释掉
+        // jdbcTokenRepository.setCreateTableOnStartup(true);
+        return jdbcTokenRepository;
     }
 }

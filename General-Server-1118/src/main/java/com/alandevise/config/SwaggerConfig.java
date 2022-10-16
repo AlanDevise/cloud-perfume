@@ -1,13 +1,13 @@
 package com.alandevise.config;
 
 import io.swagger.annotations.Api;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  * @Filename: SwaggerConfig.java
  * @Package: com.alandevise.config
  * @Version: V1.0.0
- * @Description: 1.
+ * @Description: 1. Swagger配置类
  * @Author: Alan Zhang [initiator@alandevise.com]
  * @Date: 2022-09-20 15:23
  */
@@ -69,7 +69,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
         return new BeanPostProcessor() {
 
             @Override
-            public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+            public Object postProcessAfterInitialization(@NotNull Object bean, @NotNull String beanName) throws BeansException {
                 if (bean instanceof WebMvcRequestHandlerProvider || bean instanceof WebFluxRequestHandlerProvider) {
                     customizeSpringfoxHandlerMappings(getHandlerMappings(bean));
                 }

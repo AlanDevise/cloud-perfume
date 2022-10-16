@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * @Filename: SpringSecurityDemoTests.java
  * @Package: com.alandevise
  * @Version: V1.0.0
- * @Description: 1.
+ * @Description: 1. 加密明文密码测试类
  * @Author: Alan Zhang [initiator@alandevise.com]
  * @Date: 2022年10月06日 14:50
  */
