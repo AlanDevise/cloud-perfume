@@ -1,5 +1,7 @@
 package com.alandevise;
 
+import cn.hutool.core.util.IdUtil;
+import com.alandevise.dao.FolderTree;
 import com.alandevise.entity.User;
 import com.alandevise.dao.UserMapper;
 import org.junit.Test;
@@ -8,7 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.annotation.Resource;
+import java.io.File;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * @Filename: MybatisPlusApplicationTests.java
@@ -26,6 +31,11 @@ public class MybatisPlusApplicationTests {
     //也可以自己编写自己的扩展方法
     @Autowired
     private UserMapper userMapper;
+
+
+
+
+
 
     @Test
     public void contextLoads() {
