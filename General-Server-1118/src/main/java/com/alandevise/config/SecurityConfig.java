@@ -85,8 +85,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 记住我功能
         http.rememberMe()
-                // 失效时间，单位秒，默认为2周
-                .tokenValiditySeconds(60)
+                // 失效时间，单位秒，默认为2周，这里设置为2小时
+                .tokenValiditySeconds(2 * 60 * 60)
                 // .rememberMeParameter()
                 // 自定义登录逻辑
                 .userDetailsService(userDetailsService)
