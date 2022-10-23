@@ -13,6 +13,7 @@
         <module>Payment-Provider-9003</module>
         <module>General-Server-1118</module>
         <module>Util</module>
+        <module>JJWT-Server-1119</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -58,6 +59,8 @@
         <pagehelper.version>5.3.2</pagehelper.version>
         <hutool.version>5.8.8</hutool.version>
         <spring-security.version>2.6.3</spring-security.version>
+        <oauth2.version>2.2.5.RELEASE</oauth2.version>
+        <spring-cloud-starter-security.version>2.2.5.RELEASE</spring-cloud-starter-security.version>
     </properties>
 
     <dependencyManagement>
@@ -99,6 +102,20 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-security</artifactId>
                 <version>${spring-security.version}</version>
+            </dependency>
+
+            <!-- [REQUIRED] Spring cloud oauth2 -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-oauth2</artifactId>
+                <version>${oauth2.version}</version>
+            </dependency>
+
+            <!-- [REQUIRED] Spring cloud security -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-security</artifactId>
+                <version>${spring-cloud-starter-security.version}</version>
             </dependency>
 
             <dependency>

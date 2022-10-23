@@ -17,16 +17,28 @@ import java.util.Stack;
 @SpringBootTest
 public class SimpleTest {
     @Test
-    public void testOne(){
+    public void testOne() {
         Stack<String> simpleStack = new Stack<>();
         simpleStack.push("Bottom");
         simpleStack.push("Medium");
         simpleStack.push("Top");
         Stack<String> clone = (Stack<String>) simpleStack.clone();
-        if (!clone.isEmpty()){
+        if (!clone.isEmpty()) {
             clone.pop();
             System.out.println(clone.peek());
         }
         System.out.println(simpleStack.peek());
     }
+
+    @Test
+    public void testTwo() {
+        String word1 = "abcd";
+        String word2 = "pq";
+
+        char c = word1.charAt(0);
+        System.out.println(c);
+    }
+
+
 }
+
