@@ -60,18 +60,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 授权认证
         String ipAddress = "127.0.0.1";
-        http.authorizeHttpRequests()
-                // 除了/login.html，/error.html不需要认证
-                .antMatchers("/login.html", "/error.html").permitAll()
-                // 访问main1.html要求有admin权限，“admin”区分大小写
-                // .antMatchers("/main1.html").hasAuthority("admin")
-                // 访问main1.html要求有admin 或者adminN 权限
-                // .antMatchers("/main1.html").hasAnyAuthority("admin", "adminN")
-                // 访问main1.html要求为abc角色
-                // .antMatchers("/main1.html").hasRole("abc")
-                // 所有请求都必须被验证，所有请求都必须登录之后访问
-                // .antMatchers("/swagger-ui/index.html").hasIpAddress("127.0.0.1")
-                .anyRequest().authenticated();
+        // http.authorizeHttpRequests()
+        //         // 除了/login.html，/error.html不需要认证
+        //         .antMatchers("/login.html", "/error.html").permitAll()
+        //         // 访问main1.html要求有admin权限，“admin”区分大小写
+        //         // .antMatchers("/main1.html").hasAuthority("admin")
+        //         // 访问main1.html要求有admin 或者adminN 权限
+        //         // .antMatchers("/main1.html").hasAnyAuthority("admin", "adminN")
+        //         // 访问main1.html要求为abc角色
+        //         // .antMatchers("/main1.html").hasRole("abc")
+        //         // 所有请求都必须被验证，所有请求都必须登录之后访问
+        //         // .antMatchers("/swagger-ui/index.html").hasIpAddress("127.0.0.1")
+        //         .anyRequest().authenticated();
 
         // 关闭csrf防护
         http.csrf().disable();
