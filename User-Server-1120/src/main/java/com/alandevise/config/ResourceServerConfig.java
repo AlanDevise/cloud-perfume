@@ -20,9 +20,11 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
+                // 所有请求均需被验证
                 .anyRequest().authenticated()
                 .and()
                 .requestMatchers()
+                // 放行特定资源
                 .antMatchers("/user/**");
     }
 }
