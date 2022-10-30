@@ -56,7 +56,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 // 配置clientSecret
                 .secret(passwordEncoder.encode("112233"))
                 // 配置访问token的有效期
-                .accessTokenValiditySeconds(3600)
+                .accessTokenValiditySeconds(600)
                 // 配置redirect-uri，用于授权成功后重定向跳转
                 .redirectUris("http://www.baidu.com")
                 // 配置申请的权限范围
