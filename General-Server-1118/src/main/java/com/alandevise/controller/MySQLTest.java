@@ -27,8 +27,8 @@ import java.util.Stack;
 @Slf4j
 public class MySQLTest {
 
-    @Autowired
-    private FolderTree folderTree;
+    // @Autowired
+    // private FolderTree folderTree;
 
     // 创建一个堆栈来存储父节点ID，符合FILO
     static Stack<String> parentId = new Stack<>();
@@ -39,51 +39,51 @@ public class MySQLTest {
         return "运行到了Controller层";
     }
 
-    @GetMapping("/FolderTree")
-    @ApiOperation("遍历文件夹测试-GET")
-    public void FolderTree() {
-        // 根目录文件
-        String rootPath = "D:/test";
-        File rootFile = new File(rootPath);
-        TraverseAllFileInFolder(rootFile);
-    }
+    // @GetMapping("/FolderTree")
+    // @ApiOperation("遍历文件夹测试-GET")
+    // public void FolderTree() {
+    //     // 根目录文件
+    //     String rootPath = "D:/test";
+    //     File rootFile = new File(rootPath);
+    //     TraverseAllFileInFolder(rootFile);
+    // }
 
-    private void TraverseAllFileInFolder(File file) {
-        File[] files = file.listFiles();
-        if (files != null) {
-            for (File f : files) {
-                if (f.isDirectory()) {   // 是目录
-                    String id = IdUtil.fastSimpleUUID();
-                    String treeId = IdUtil.fastSimpleUUID();
-                    String treeParentId;
-                    if (!parentId.isEmpty()) {
-                        treeParentId = parentId.peek();
-                    } else {
-                        treeParentId = "";
-                    }
-                    String name = f.getName();
-                    Integer type = 0;
-                    folderTree.insertAllInfo(id, treeId, treeParentId, name, type, ""); // 更新插入到数据库
-                    parentId.push(treeId);  // 将当前树形节点压入栈
-                    TraverseAllFileInFolder(f);
-                }
-                if (f.isFile()) {    // 是文件
-                    String id = IdUtil.fastSimpleUUID();
-                    String treeId = IdUtil.fastSimpleUUID();
-                    String treeParentId;
-                    if (!parentId.isEmpty()) {
-                        treeParentId = parentId.peek(); // 取最上层的数据
-                    } else {
-                        treeParentId = "";
-                    }
-                    String name = f.getName();
-                    Integer type = 1;
-                    folderTree.insertAllInfo(id, treeId, treeParentId, name, type, ((f.getPath()).replaceAll("\\\\","/")).replaceAll("D:/","")); // 更新插入到数据库
-                }
-            }
-            if (!parentId.isEmpty()) {
-                parentId.pop();     // 一整个文件夹遍历完及离开出栈
-            }
-        }
-    }
+    // private void TraverseAllFileInFolder(File file) {
+    //     File[] files = file.listFiles();
+    //     if (files != null) {
+    //         for (File f : files) {
+    //             if (f.isDirectory()) {   // 是目录
+    //                 String id = IdUtil.fastSimpleUUID();
+    //                 String treeId = IdUtil.fastSimpleUUID();
+    //                 String treeParentId;
+    //                 if (!parentId.isEmpty()) {
+    //                     treeParentId = parentId.peek();
+    //                 } else {
+    //                     treeParentId = "";
+    //                 }
+    //                 String name = f.getName();
+    //                 Integer type = 0;
+    //                 folderTree.insertAllInfo(id, treeId, treeParentId, name, type, ""); // 更新插入到数据库
+    //                 parentId.push(treeId);  // 将当前树形节点压入栈
+    //                 TraverseAllFileInFolder(f);
+    //             }
+    //             if (f.isFile()) {    // 是文件
+    //                 String id = IdUtil.fastSimpleUUID();
+    //                 String treeId = IdUtil.fastSimpleUUID();
+    //                 String treeParentId;
+    //                 if (!parentId.isEmpty()) {
+    //                     treeParentId = parentId.peek(); // 取最上层的数据
+    //                 } else {
+    //                     treeParentId = "";
+    //                 }
+    //                 String name = f.getName();
+    //                 Integer type = 1;
+    //                 folderTree.insertAllInfo(id, treeId, treeParentId, name, type, ((f.getPath()).replaceAll("\\\\","/")).replaceAll("D:/","")); // 更新插入到数据库
+    //             }
+    //         }
+    //         if (!parentId.isEmpty()) {
+    //             parentId.pop();     // 一整个文件夹遍历完及离开出栈
+    //         }
+    //     }
+    // }
 }

@@ -1,0 +1,21 @@
+server:
+  port: 1111
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    #geteway的配置
+    gateway:
+      #路由规则
+      routes:
+        # 路由的唯一标识
+        - id: PaymentConsumer_route
+          uri: http://localhost:9002 # 需要转发的地址
+          predicates:
+            - Path=/consumer/**
+            # http://localhost:1111/consumer/consumerTest 路由到下行路径
+            # http://localhost:9002/consumer/consumerTest
+          filters:
+            - StripPrefix=1 # 转发之前去掉第一层路径
+            # http://localhost:9002/consumerTest 经过网管过滤后真实访问的路径

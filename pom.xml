@@ -15,6 +15,7 @@
         <module>Util</module>
         <module>JJWT-Server-1119</module>
         <module>User-Server-1120</module>
+        <module>Gateway-Server-1111</module>
     </modules>
     <packaging>pom</packaging>
 

@@ -1,7 +1,6 @@
 package com.alandevise.config;
 
 import com.alandevise.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,22 +26,22 @@ import javax.annotation.Resource;
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
-    @Autowired
+    @Resource
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
+    @Resource
     private AuthenticationManager authenticationManager;
 
-    @Autowired
+    @Resource
     private UserService userService;
 
-    @Autowired
+    @Resource
     @Qualifier("redisTokenStore")
     private TokenStore tokenStore;
 
     // [!!!]使用密码模式时需重写此方法
     @Override
-    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
         endpoints.authenticationManager(authenticationManager)
                 .userDetailsService(userService)
                 .tokenStore(tokenStore);
@@ -58,7 +57,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 // 配置访问token的有效期
                 .accessTokenValiditySeconds(600)
                 // 配置redirect-uri，用于授权成功后重定向跳转
-                .redirectUris("http://www.baidu.com")
+                .redirectUris("https://www.baidu.com")
                 // 配置申请的权限范围
                 .scopes("all")
                 // 配置grant_type，表示授权类型

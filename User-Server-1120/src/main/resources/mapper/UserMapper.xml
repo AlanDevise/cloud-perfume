@@ -11,7 +11,7 @@
 
     <select id="selectByName" resultType="com.alandevise.entity.UserAllInfo">
         select *
-        from alandevisedatabase.user
+        from user
         <where>
             <if test="username != null and username != ''">
                 <!-- username like CONCAT('%',#{username},'%') -->
