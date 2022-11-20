@@ -17,7 +17,8 @@ spring:
         # 路由的唯一标识
         - id: PaymentConsumer_route
           uri: lb://Payment-Consumer # 需要转发的地址  lb: 使用nacos中的本地负载均衡策略
-          predicates: # 断言
+#          uri: http://localhost:9002 # 需要转发的地址  lb: 使用nacos中的本地负载均衡策略
+          predicates:
             - Path=/consumer/**
             # http://localhost:1111/consumer/consumerTest 路由到下行路径
             # http://localhost:9002/consumer/consumerTest

@@ -1,0 +1,18 @@
+﻿server:
+  port: 1111
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    # 配置nacos
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        enabled: true
+    #geteway的配置
+    gateway:
+      discovery:
+        locator:
+          # 启动DiscoveryClient网关集成的标志，是否自动识别nacos服务
+          enabled: true
