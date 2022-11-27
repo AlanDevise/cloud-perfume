@@ -21,6 +21,25 @@ spring:
             - Path=/consumer/**
             # http://localhost:1111/consumer/consumerTest 路由到下行路径
             # http://localhost:9002/consumer/consumerTest
+            - After=2022-01-20T17:42:47.789-07:00[America/Denver] # 使用After断言，在指定日期后访问才可访问成功，否则报404
+            # - Before=2023-01-20T17:42:47.789-07:00[America/Denver] # 使用Before断言，在指定日期前访问才可访问成功，否则报404
+            # - Between=2017-01-20T17:42:47.789-07:00[America/Denver], 2017-01-21T17:42:47.789-07:00[America/Denver] # 使用Between断言，在指定日期间访问才可访问成功，否则报404
           filters:
             - StripPrefix=1 # 转发之前去掉第一层路径
             # http://localhost:9002/consumerTest 经过网关过滤后真实访问的路径
+
+        - id: weight_high
+          uri: http://localhost:9003
+          predicates:
+            - Path=/provider/**
+            - Weight=group1, 5
+          filters:
+            - StripPrefix=1 # 转发之前去掉第一层路径
+
+        - id: weight_low
+          uri: http://localhost:9001
+          predicates:
+            - Path=/provider/**
+            - Weight=group1, 5
+          filters:
+            - StripPrefix=1 # 转发之前去掉第一层路径

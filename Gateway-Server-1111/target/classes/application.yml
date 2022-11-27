@@ -12,7 +12,34 @@ spring:
         enabled: true
     #geteway的配置
     gateway:
-      discovery:
-        locator:
-          # 启动DiscoveryClient网关集成的标志，是否自动识别nacos服务
-          enabled: true
+      #路由规则
+      routes:
+        # 路由的唯一标识
+        - id: PaymentConsumer_route
+          uri: lb://Payment-Consumer # 需要转发的地址  lb: 使用nacos中的本地负载均衡策略
+          predicates: # 断言
+            - Path=/consumer/**
+            # http://localhost:1111/consumer/consumerTest 路由到下行路径
+            # http://localhost:9002/consumer/consumerTest
+            - After=2022-01-20T17:42:47.789-07:00[America/Denver] # 使用After断言，在指定日期后访问才可访问成功，否则报404
+            # - Before=2023-01-20T17:42:47.789-07:00[America/Denver] # 使用Before断言，在指定日期前访问才可访问成功，否则报404
+            # - Between=2017-01-20T17:42:47.789-07:00[America/Denver], 2017-01-21T17:42:47.789-07:00[America/Denver] # 使用Between断言，在指定日期间访问才可访问成功，否则报404
+          filters:
+            - StripPrefix=1 # 转发之前去掉第一层路径
+            # http://localhost:9002/consumerTest 经过网关过滤后真实访问的路径
+
+        - id: weight_high
+          uri: http://localhost:9003
+          predicates:
+            - Path=/provider/**
+            - Weight=group1, 9.5
+          filters:
+            - StripPrefix=1 # 转发之前去掉第一层路径
+
+        - id: weight_low
+          uri: http://localhost:9001
+          predicates:
+            - Path=/provider/**
+            - Weight=group1, 0.5
+          filters:
+            - StripPrefix=1 # 转发之前去掉第一层路径
