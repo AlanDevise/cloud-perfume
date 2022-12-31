@@ -1,15 +1,13 @@
 package com.alandevise.controller;
 
-import cn.hutool.core.util.IdUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
 import java.util.Stack;
 
 /**
@@ -37,6 +35,19 @@ public class MySQLTest {
     @ApiOperation("MySQL基本操作测试-GET")
     public String FirstTest() {
         return "运行到了Controller层";
+    }
+
+    @GetMapping("/hello")
+    @ApiOperation("AOP切面Demo演示-GET")
+    public String AopDemo(@RequestParam("name") String param) {
+        return "接收到参数是：" + param;
+    }
+
+    @GetMapping("/helloAgain")
+    @ApiOperation("AOP切面Demo演示-GET")
+    public String AopDemo2(@RequestParam("name") String name,
+                           @RequestParam("age") String age) {
+        return "接收到参数是：" + name + age;
     }
 
     // @GetMapping("/FolderTree")
