@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alandevise.dao.StudentMapper">
+
+    <insert id="insert">
+        insert into student (name, age, addr, addr_num)
+        values (#{student.name}, #{student.age}, #{student.addr}, #{student.addrNum})
+    </insert>
+    
+    <insert id="insertSplice">
+        insert into student (name, age, addr, addr_num) values
+        <foreach collection="studentList" item="item" separator=",">
+            (#{item.name}, #{item.age}, #{item.addr}, #{item.addrNum})
+        </foreach>
+    </insert>
+
+</mapper>

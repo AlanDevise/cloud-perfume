@@ -1,13 +1,22 @@
 package com.alandevise.controller;
 
+import com.alandevise.dao.StudentMapper;
+import com.alandevise.entity.Student;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.session.ExecutorType;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 /**
@@ -24,6 +33,12 @@ import java.util.Stack;
 @Api(tags = "MySQL测试接口", value = "MySQL测试接口")
 @Slf4j
 public class MySQLTest {
+
+    @Resource
+    StudentMapper studentMapper;
+
+    @Resource
+    SqlSessionFactory sqlSessionFactory;
 
     // @Autowired
     // private FolderTree folderTree;
@@ -49,6 +64,69 @@ public class MySQLTest {
                            @RequestParam("age") String age) {
         return "接收到参数是：" + name + age;
     }
+
+    /*
+     * 一次性插入大量数据的基本方法，一条数据一条数据插入，极为浪费系统性能，速度效率极慢
+     * [极为不推荐此种方法进行大量数据写入操作]
+     * record: 5W - 179s
+     *         50W - 2468s
+     * */
+    @GetMapping("/for")
+    public void forSingle() {
+        // 开始时间
+        long startTime = System.currentTimeMillis();
+        for (int i = 0; i < 500000; i++) {
+            Student student = new Student("李毅" + i, 24, "张家界市" + i, i + "号");
+            studentMapper.insert(student);
+        }
+        // 结束时间
+        long endTime = System.currentTimeMillis();
+        System.out.println("插入数据消耗时间：" + (endTime - startTime));
+    }
+
+    /*
+     * 大量数据一次性插入的次优解，本质是将大量的插入语句合并成一句
+     * 以减少重新获取数据库连接的次数，释放资源的次数，以及解析sql的次数，从而提高性能
+     * 但同样存在一条sql的长度过长超过MySQL的默认限制的问题，需要手动增大
+     * [ERROR] com.mysql.jdbc.PacketTooBigException: Packet for query is too large (39666728 > 4194304).
+     * */
+    @GetMapping("/sql")
+    public void sql() {
+        ArrayList<Student> arrayList = new ArrayList<>();
+        long startTime = System.currentTimeMillis();
+        for (int i = 0; i < 500000; i++) {
+            Student student = new Student("李毅" + i, 24, "张家界市" + i, i + "号");
+            arrayList.add(student);
+        }
+        studentMapper.insertSplice(arrayList);
+        long endTime = System.currentTimeMillis();
+        System.out.println("插入数据消耗时间：" + (endTime - startTime));
+    }
+
+    /*
+     * 大量数据一次性插入MySQL的最优解 [Temporary]
+     * record: 5W - 1s
+     *         50W - 8.2s
+     * */
+    @GetMapping("/forSaveBatch")
+    public void forSaveBatch() {
+        //  开启批量处理模式 BATCH 、关闭自动提交事务 false
+        SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, false);
+        //  反射获取，获取Mapper
+        StudentMapper studentMapper = sqlSession.getMapper(StudentMapper.class);
+        long startTime = System.currentTimeMillis();
+        for (int i = 0; i < 500000; i++) {
+            Student student = new Student("李毅" + i, 24, "张家界市" + i, i + "号");
+            studentMapper.insert(student);
+        }
+        // 一次性提交事务
+        sqlSession.commit();
+        // 关闭资源
+        sqlSession.close();
+        long endTime = System.currentTimeMillis();
+        System.out.println("总耗时： " + (endTime - startTime));
+    }
+
 
     // @GetMapping("/FolderTree")
     // @ApiOperation("遍历文件夹测试-GET")
