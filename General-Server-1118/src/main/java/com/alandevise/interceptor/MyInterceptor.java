@@ -22,39 +22,17 @@ public class MyInterceptor implements HandlerInterceptor {
 
     private final Logger logger = LoggerFactory.getLogger(myAdvice.class);
 
-    /**
-     * @param request
-     * @param response
-     * @param handler
-     * @return
-     * @throws Exception
-     */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         logger.info("[Interceptor] 这里是拦截器预处理");
         return true;
     }
-
-    /**
-     * @param request
-     * @param response
-     * @param handler
-     * @param modelAndView
-     * @throws Exception
-     */
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         logger.info("[Interceptor] 这里是拦截器后处理");
         HandlerInterceptor.super.postHandle(request, response, handler, modelAndView);
     }
 
-    /**
-     * @param request
-     * @param response
-     * @param handler
-     * @param ex
-     * @throws Exception
-     */
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         logger.info("[Interceptor] 这里是拦截器完成后处理");
