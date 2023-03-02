@@ -38,11 +38,11 @@ public class myAdvice {
 
         ObjectMapper mapper = new ObjectMapper();
 
-        logger.info("调用前：" + className + ":" + methodName + "传递的参数为：" + mapper.writeValueAsString(array));
+        logger.info("[AOP] 调用前：" + className + ":" + methodName + "传递的参数为：" + mapper.writeValueAsString(array));
 
         Object obj = pjp.proceed();
 
-        logger.info("调用后：" + className + ":" + methodName + "传递的参数为：" + mapper.writeValueAsString(obj));
+        logger.info("[AOP] 调用后：" + className + ":" + methodName + "传递的参数为：" + mapper.writeValueAsString(obj));
 
         return obj;
     }

@@ -5,7 +5,6 @@ import com.alandevise.entity.Student;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
 /**
@@ -62,6 +60,9 @@ public class MySQLTest {
     @ApiOperation("AOP切面Demo演示-GET")
     public String AopDemo2(@RequestParam("name") String name,
                            @RequestParam("age") String age) {
+        // Object alankey = request.getAttribute("ALANKEY");
+        // log.info("[Controller] Controller层获取到了新加入的属性参数" + alankey.toString());
+        log.info("[Controller] 这里进入到了Controller");
         return "接收到参数是：" + name + age;
     }
 
