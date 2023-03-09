@@ -32,7 +32,7 @@ spring:
           uri: http://localhost:9003
           predicates:
             - Path=/provider/**
-            - Weight=group1, 9.5
+            - Weight=group1, 5
           filters:
             - StripPrefix=1 # 转发之前去掉第一层路径
 
@@ -40,6 +40,6 @@ spring:
           uri: http://localhost:9001
           predicates:
             - Path=/provider/**
-            - Weight=group1, 0.5
+            - Weight=group1, 5
           filters:
             - StripPrefix=1 # 转发之前去掉第一层路径

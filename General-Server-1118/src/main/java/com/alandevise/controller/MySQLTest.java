@@ -60,8 +60,6 @@ public class MySQLTest {
     @ApiOperation("AOP切面Demo演示-GET")
     public String AopDemo2(@RequestParam("name") String name,
                            @RequestParam("age") String age) {
-        // Object alankey = request.getAttribute("ALANKEY");
-        // log.info("[Controller] Controller层获取到了新加入的属性参数" + alankey.toString());
         log.info("[Controller] 这里进入到了Controller");
         return "接收到参数是：" + name + age;
     }
@@ -105,7 +103,7 @@ public class MySQLTest {
     }
 
     /*
-     * 大量数据一次性插入MySQL的最优解 [Temporary]
+     * 大量数据一次性插入MySQL的最优解 - 需要开启批处理 [Temporary]
      * record: 5W - 1s
      *         50W - 8.2s
      * */
