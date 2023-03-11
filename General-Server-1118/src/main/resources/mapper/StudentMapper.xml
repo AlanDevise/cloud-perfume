@@ -3,15 +3,26 @@
 <mapper namespace="com.alandevise.dao.StudentMapper">
 
     <insert id="insert">
-        insert into student (name, age, addr, addr_num)
+        insert into student (`name`, age, addr, addr_num)
         values (#{student.name}, #{student.age}, #{student.addr}, #{student.addrNum})
     </insert>
     
     <insert id="insertSplice">
-        insert into student (name, age, addr, addr_num) values
+        insert into student (`name`, age, addr, addr_num) values
         <foreach collection="studentList" item="item" separator=",">
             (#{item.name}, #{item.age}, #{item.addr}, #{item.addrNum})
         </foreach>
     </insert>
+
+    <insert id="create" parameterType="com.alandevise.entity.User">
+        insert into user_test (`name`, `balance`, `password`)
+        values (#{user.name}, #{user.balance}, #{user.password})
+    </insert>
+
+    <select id="selectUser" resultType="com.alandevise.entity.User">
+        select id, `name`, balance, password, create_time, update_time
+        from user_test
+        where id = #{id}
+    </select>
 
 </mapper>

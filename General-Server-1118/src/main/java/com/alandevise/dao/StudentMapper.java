@@ -1,7 +1,7 @@
 package com.alandevise.dao;
 
 import com.alandevise.entity.Student;
-import org.apache.ibatis.annotations.Insert;
+import com.alandevise.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -20,4 +20,6 @@ import java.util.List;
 public interface StudentMapper {
     void insert(@Param("student") Student student);
     int insertSplice(@Param("studentList") List<Student> studentList);
+    int create(@Param("user") User user);
+    User selectUser(@Param("id") Long id);
 }

@@ -2,6 +2,8 @@ package com.alandevise.controller;
 
 import com.alandevise.dao.StudentMapper;
 import com.alandevise.entity.Student;
+import com.alandevise.entity.User;
+import com.alandevise.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -31,10 +33,10 @@ import java.util.Stack;
 @Api(tags = "MySQL测试接口", value = "MySQL测试接口")
 @Slf4j
 public class MySQLTest {
-
     @Resource
     StudentMapper studentMapper;
-
+    @Resource
+    UserService userService;
     @Resource
     SqlSessionFactory sqlSessionFactory;
 
@@ -124,6 +126,20 @@ public class MySQLTest {
         sqlSession.close();
         long endTime = System.currentTimeMillis();
         System.out.println("总耗时： " + (endTime - startTime));
+    }
+
+    @RequestMapping("/create")
+    public String create(User user) throws Exception {
+        Boolean result = userService.create(user);
+        if(result){
+            return "创建成功";
+        }
+        return "创建失败";
+    }
+
+    @RequestMapping("/query")
+    public User query(Long id){
+        return userService.query(id);
     }
 
 
