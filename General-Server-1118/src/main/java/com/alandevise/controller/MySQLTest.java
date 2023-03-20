@@ -1,19 +1,19 @@
 package com.alandevise.controller;
 
 import com.alandevise.dao.StudentMapper;
+import com.alandevise.entity.QuartzBean;
 import com.alandevise.entity.Student;
 import com.alandevise.entity.User;
 import com.alandevise.service.UserService;
+import com.alandevise.util.QuartzUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.quartz.Scheduler;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -39,6 +39,9 @@ public class MySQLTest {
     UserService userService;
     @Resource
     SqlSessionFactory sqlSessionFactory;
+    //注入任务调度
+    @Resource
+    private Scheduler scheduler;
 
     // @Autowired
     // private FolderTree folderTree;
@@ -140,6 +143,83 @@ public class MySQLTest {
     @RequestMapping("/query")
     public User query(Long id){
         return userService.query(id);
+    }
+
+
+
+    @RequestMapping("/createJob")
+    @ResponseBody
+    public String  createJob(QuartzBean quartzBean)  {
+        try {
+            //进行测试所以写死
+            quartzBean.setJobClass("com.alandevise.Task.MyTask1");
+            quartzBean.setJobName("test1");
+            quartzBean.setCronExpression("*/10 * * * * ?");
+            QuartzUtils.createScheduleJob(scheduler,quartzBean);
+        } catch (Exception e) {
+            return "创建失败";
+        }
+        return "创建成功";
+    }
+
+    @RequestMapping("/pauseJob")
+    @ResponseBody
+    public String  pauseJob()  {
+        try {
+            QuartzUtils.pauseScheduleJob (scheduler,"test1");
+        } catch (Exception e) {
+            return "暂停失败";
+        }
+        return "暂停成功";
+    }
+
+    @RequestMapping("/runOnce")
+    @ResponseBody
+    public String  runOnce()  {
+        try {
+            QuartzUtils.runOnce (scheduler,"test1");
+        } catch (Exception e) {
+            return "运行一次失败";
+        }
+        return "运行一次成功";
+    }
+
+    @RequestMapping("/resume")
+    @ResponseBody
+    public String  resume()  {
+        try {
+
+            QuartzUtils.resumeScheduleJob(scheduler,"test1");
+        } catch (Exception e) {
+            return "启动失败";
+        }
+        return "启动成功";
+    }
+
+    @RequestMapping("/update")
+    @ResponseBody
+    public String  update(QuartzBean quartzBean)  {
+        try {
+            //进行测试所以写死
+            quartzBean.setJobClass("com.alandevise.Task.MyTask1");
+            quartzBean.setJobName("test1");
+            quartzBean.setCronExpression("10 * * * * ?");
+            QuartzUtils.updateScheduleJob(scheduler,quartzBean);
+        } catch (Exception e) {
+            return "启动失败";
+        }
+        return "启动成功";
+    }
+
+    @RequestMapping("/delete")
+    @ResponseBody
+    public String  delete(QuartzBean quartzBean)  {
+        try {
+            QuartzUtils.deleteScheduleJob (scheduler,"test1");
+        } catch (Exception e) {
+            return "删除定时任务失败";
+        }
+        return "删除定时任务成功";
     }
 
 
