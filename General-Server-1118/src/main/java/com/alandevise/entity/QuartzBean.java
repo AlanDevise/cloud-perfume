@@ -33,5 +33,4 @@ public class QuartzBean {
 
     /** 任务运行时间表达式 */
     private String cronExpression;
-    //省略getter setter
 }
