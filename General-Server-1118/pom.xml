@@ -66,6 +66,12 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
+        <!-- [REQUIRED] postgresql -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+
         <!-- [REQUIRED] Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -99,12 +105,6 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-        </dependency>
-
-        <!-- [REQUIRED] Log4j -->
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
         </dependency>
 
         <!-- [REQUIRED] Actuator -->

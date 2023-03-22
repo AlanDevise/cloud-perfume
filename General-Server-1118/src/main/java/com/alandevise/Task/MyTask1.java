@@ -13,7 +13,7 @@ import java.util.Date;
  * @Filename: MyTask1.java
  * @Package: com.alandevise.Task
  * @Version: V1.0.0
- * @Description: 1.
+ * @Description: 1. 一个定时任务类
  * @Author: Alan Zhang [initiator@alandevise.com]
  * @Date: 2023年03月20日 21:25
  */

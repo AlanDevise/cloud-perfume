@@ -12,21 +12,29 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     # MySQL 驱动包
     driver-class-name: org.gjt.mm.mysql.Driver
-    # 数据库链接
+    # MySQL数据库链接
     url: jdbc:mysql://localhost:3306/AlanDeviseDatabase?useUnicode=true&characterEncoding=utf8&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
-    # 用户名
+    # MySQL用户名
     username: root
-    # 密码
+    # MySQL密码
     password: AlanDevise2020
     druid:
       # 关闭数据库连接空闲检测，频繁检测会降低性能
       test-while-idle: false
+#    # PostgresSQL 配置
+#    url: jdbc:postgresql://localhost:5432/postgres
+#    # postgresSQL用户名
+#    username: postgres
+#    # PostgresSQL密码
+#    password: My123
+#    # PostgresSQL 驱动包
+#    driver-class-name: org.postgresql.Driver
 
   redis:
     database: 0
     host: 127.0.0.1
-    port: 6379
-    password: admin # 如果未单独配置默认为空即可
+    port: 32768
+    password: redispw # 如果未单独配置默认为空即可
     timeout: 1000
     jedis:
       pool:

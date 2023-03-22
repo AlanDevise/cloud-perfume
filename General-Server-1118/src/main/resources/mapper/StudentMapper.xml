@@ -15,7 +15,7 @@
     </insert>
 
     <insert id="create" parameterType="com.alandevise.entity.User">
-        insert into user_test (`name`, `balance`, `password`)
+        insert into user_test (name, balance, password)
         values (#{user.name}, #{user.balance}, #{user.password})
     </insert>
 
