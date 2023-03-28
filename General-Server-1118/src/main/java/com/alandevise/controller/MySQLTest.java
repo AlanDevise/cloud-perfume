@@ -111,6 +111,7 @@ public class MySQLTest {
      * 大量数据一次性插入MySQL的最优解 - 需要开启批处理 [Temporary]
      * record: 5W - 1s
      *         50W - 8.2s
+     *         100W - 35.2s
      * */
     @GetMapping("/forSaveBatch")
     public void forSaveBatch() {
@@ -119,7 +120,7 @@ public class MySQLTest {
         //  反射获取，获取Mapper
         StudentMapper studentMapper = sqlSession.getMapper(StudentMapper.class);
         long startTime = System.currentTimeMillis();
-        for (int i = 0; i < 500000; i++) {
+        for (int i = 0; i < 1000000; i++) {
             Student student = new Student("李毅" + i, 24, "张家界市" + i, i + "号");
             studentMapper.insert(student);
         }
