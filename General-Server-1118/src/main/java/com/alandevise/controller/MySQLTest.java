@@ -2,6 +2,7 @@ package com.alandevise.controller;
 
 import com.alandevise.dao.StudentMapper;
 import com.alandevise.entity.QuartzBean;
+import com.alandevise.entity.SQL;
 import com.alandevise.entity.Student;
 import com.alandevise.entity.User;
 import com.alandevise.service.UserService;
@@ -16,6 +17,8 @@ import org.quartz.Scheduler;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -39,7 +42,7 @@ public class MySQLTest {
     UserService userService;
     @Resource
     SqlSessionFactory sqlSessionFactory;
-    //注入任务调度
+    // 注入任务调度
     @Resource
     private Scheduler scheduler;
 
@@ -115,15 +118,42 @@ public class MySQLTest {
      *         300W - 110.703s
      * */
     @GetMapping("/forSaveBatch")
-    public void forSaveBatch() {
+    public void forSaveBatch() throws SQLException {
+        // //  开启批量处理模式 BATCH 、关闭自动提交事务 false
+        // SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, false);
+        // //  反射获取，获取Mapper
+        // StudentMapper studentMapper = sqlSession.getMapper(StudentMapper.class);
+        // long startTime = System.currentTimeMillis();
+        // for (int i = 0; i < 50000; i++) {
+        //     Student student = new Student("李毅" + i, 24, "张家界市" + i, i + "号");
+        //     studentMapper.insert(student);
+        // }
+        // // 一次性提交事务
+        // sqlSession.commit();
+        // sqlSession.clearCache();
+        // // 关闭资源
+        // sqlSession.close();
+        // long endTime = System.currentTimeMillis();
+        // log.error("总耗时： " + (endTime - startTime));
+
+
+        // -------------------------------------------------------------------------
+
+        // Mapper直接执行SQL语句
         //  开启批量处理模式 BATCH 、关闭自动提交事务 false
         SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, false);
         //  反射获取，获取Mapper
         StudentMapper studentMapper = sqlSession.getMapper(StudentMapper.class);
         long startTime = System.currentTimeMillis();
-        for (int i = 0; i < 3000000; i++) {
-            Student student = new Student("李毅" + i, 24, "张家界市" + i, i + "号");
-            studentMapper.insert(student);
+        for (int i = 0; i < 50000; i++) {
+
+            // String sql = "insert into student (`name`, age, addr, addr_num) values ('李毅', '27','深圳市', '123456')";
+            // String sql = "insert into student (`name`, age, addr, addr_num) values ('李毅', '27','深圳市', '123456')";
+            // String sql = "insert into student (`name`, age, addr, addr_num) values ('李毅', '27','深圳市', '123456')";
+
+            SQL sqlStr = new SQL("student", "`name`, age, addr, addr_num", "'李毅', '27','深圳市', '123456'");
+            studentMapper.insertSql3(sqlStr);
+
         }
         // 一次性提交事务
         sqlSession.commit();
@@ -131,34 +161,70 @@ public class MySQLTest {
         // 关闭资源
         sqlSession.close();
         long endTime = System.currentTimeMillis();
-        System.out.println("总耗时： " + (endTime - startTime));
+        log.error("总耗时： " + (endTime - startTime));
+
+
+
+
+        // -------------------------------------------------------------------------
+
+
+        // SqlSession sqlSession = null;
+        // Statement statement = null;
+        // long startTime = System.currentTimeMillis();
+        // try {
+        //
+        //     sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);
+        //     statement = sqlSession.getConnection().createStatement();
+        //     for (int i = 0; i < 1000000; i++) {
+        //         statement.addBatch("insert into student (`name`, age, addr, addr_num) values ('李毅', '27','深圳市', '123456')");
+        //         // if ((i % 50000 == 0) || i == 50000) {
+        //         //
+        //         //     log.info("=== 执行批处理 {} 条",i);
+        //         // }
+        //     }
+        //     statement.executeBatch();
+        //     statement.clearBatch();
+        // } finally {
+        //     if (statement != null) {
+        //         try {
+        //             statement.clearBatch();
+        //             statement.close();
+        //         } catch (SQLException throwables) {
+        //             throwables.printStackTrace();
+        //         }
+        //     }
+        // }
+        // sqlSession.commit();
+        // sqlSession.close();
+        // long endTime = System.currentTimeMillis();
+        // log.info("总耗时： " + (endTime - startTime));
     }
 
     @RequestMapping("/create")
     public String create(User user) throws Exception {
         Boolean result = userService.create(user);
-        if(result){
+        if (result) {
             return "创建成功";
         }
         return "创建失败";
     }
 
     @RequestMapping("/query")
-    public User query(Long id){
+    public User query(Long id) {
         return userService.query(id);
     }
 
 
-
     @RequestMapping("/createJob")
     @ResponseBody
-    public String  createJob(QuartzBean quartzBean)  {
+    public String createJob(QuartzBean quartzBean) {
         try {
-            //进行测试所以写死
+            // 进行测试所以写死
             quartzBean.setJobClass("com.alandevise.Task.MyTask1");
             quartzBean.setJobName("test1");
             quartzBean.setCronExpression("*/10 * * * * ?");
-            QuartzUtils.createScheduleJob(scheduler,quartzBean);
+            QuartzUtils.createScheduleJob(scheduler, quartzBean);
         } catch (Exception e) {
             return "创建失败";
         }
@@ -167,9 +233,9 @@ public class MySQLTest {
 
     @RequestMapping("/pauseJob")
     @ResponseBody
-    public String  pauseJob()  {
+    public String pauseJob() {
         try {
-            QuartzUtils.pauseScheduleJob (scheduler,"test1");
+            QuartzUtils.pauseScheduleJob(scheduler, "test1");
         } catch (Exception e) {
             return "暂停失败";
         }
@@ -178,9 +244,9 @@ public class MySQLTest {
 
     @RequestMapping("/runOnce")
     @ResponseBody
-    public String  runOnce()  {
+    public String runOnce() {
         try {
-            QuartzUtils.runOnce (scheduler,"test1");
+            QuartzUtils.runOnce(scheduler, "test1");
         } catch (Exception e) {
             return "运行一次失败";
         }
@@ -189,10 +255,10 @@ public class MySQLTest {
 
     @RequestMapping("/resume")
     @ResponseBody
-    public String  resume()  {
+    public String resume() {
         try {
 
-            QuartzUtils.resumeScheduleJob(scheduler,"test1");
+            QuartzUtils.resumeScheduleJob(scheduler, "test1");
         } catch (Exception e) {
             return "启动失败";
         }
@@ -201,13 +267,13 @@ public class MySQLTest {
 
     @RequestMapping("/update")
     @ResponseBody
-    public String  update(QuartzBean quartzBean)  {
+    public String update(QuartzBean quartzBean) {
         try {
-            //进行测试所以写死
+            // 进行测试所以写死
             quartzBean.setJobClass("com.alandevise.Task.MyTask1");
             quartzBean.setJobName("test1");
             quartzBean.setCronExpression("10 * * * * ?");
-            QuartzUtils.updateScheduleJob(scheduler,quartzBean);
+            QuartzUtils.updateScheduleJob(scheduler, quartzBean);
         } catch (Exception e) {
             return "启动失败";
         }
@@ -216,9 +282,9 @@ public class MySQLTest {
 
     @RequestMapping("/delete")
     @ResponseBody
-    public String  delete(QuartzBean quartzBean)  {
+    public String delete(QuartzBean quartzBean) {
         try {
-            QuartzUtils.deleteScheduleJob (scheduler,"test1");
+            QuartzUtils.deleteScheduleJob(scheduler, "test1");
         } catch (Exception e) {
             return "删除定时任务失败";
         }

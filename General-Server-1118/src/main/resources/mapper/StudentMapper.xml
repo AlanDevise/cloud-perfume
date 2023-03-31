@@ -19,6 +19,20 @@
         values (#{user.name}, #{user.balance}, #{user.password})
     </insert>
 
+    <insert id="insertSql">
+        ${sql}
+    </insert>
+
+    <insert id="insertSql2">
+        insert into ${tableName2} (${columns})
+        values (${val})
+    </insert>
+
+    <insert id="insertSql3">
+        insert into student (`name`, age, addr, addr_num)
+        values (${SQL.val})
+    </insert>
+
     <select id="selectUser" resultType="com.alandevise.entity.User">
         select id, `name`, balance, password, create_time, update_time
         from user_test

@@ -21,14 +21,14 @@ spring:
     druid:
       # 关闭数据库连接空闲检测，频繁检测会降低性能
       test-while-idle: false
-#    # PostgresSQL 配置
-#    url: jdbc:postgresql://localhost:5432/postgres
-#    # postgresSQL用户名
-#    username: postgres
-#    # PostgresSQL密码
-#    password: My123
-#    # PostgresSQL 驱动包
-#    driver-class-name: org.postgresql.Driver
+  #    # PostgresSQL 配置
+  #    url: jdbc:postgresql://localhost:5432/postgres
+  #    # postgresSQL用户名
+  #    username: postgres
+  #    # PostgresSQL密码
+  #    password: My123
+  #    # PostgresSQL 驱动包
+  #    driver-class-name: org.postgresql.Driver
 
   redis:
     database: 0
@@ -61,3 +61,11 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    com.alandevise.dao.StudentMapper: debug
+    org:
+      apache:
+        ibatis:
+          executor: debug
