@@ -2,8 +2,8 @@ package com.alandevise.controller;
 
 import com.alandevise.dao.StudentMapper;
 import com.alandevise.entity.QuartzBean;
-import com.alandevise.entity.SQL;
 import com.alandevise.entity.Student;
+import com.alandevise.entity.TFAccrue;
 import com.alandevise.entity.User;
 import com.alandevise.service.UserService;
 import com.alandevise.util.QuartzUtils;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -145,19 +144,50 @@ public class MySQLTest {
         //  反射获取，获取Mapper
         StudentMapper studentMapper = sqlSession.getMapper(StudentMapper.class);
         long startTime = System.currentTimeMillis();
-        for (int i = 0; i < 50000; i++) {
+        for (int i = 0; i < 10; i++) {
 
             // String sql = "insert into student (`name`, age, addr, addr_num) values ('李毅', '27','深圳市', '123456')";
             // String sql = "insert into student (`name`, age, addr, addr_num) values ('李毅', '27','深圳市', '123456')";
             // String sql = "insert into student (`name`, age, addr, addr_num) values ('李毅', '27','深圳市', '123456')";
 
-            SQL sqlStr = new SQL("student", "`name`, age, addr, addr_num", "'李毅', '27','深圳市', '123456'");
-            studentMapper.insertSql3(sqlStr);
-
+            for (int j = 0; j < 1000; j++) {
+                // SQL sqlStr = new SQL("student", "`name`, age, addr, addr_num", "'李毅', '27','深圳市', '123456'");
+                TFAccrue tfAccrue = TFAccrue.builder()
+                        .tagCode("73.OCT_121212.0.EPd")
+                        .tagNo("40")
+                        .tagName("EPd")
+                        .name("1212_日冻结正向有功总电能")
+                        .tagType("0")
+                        .tagClass("0")
+                        .preci("2")
+                        .unit("0")
+                        .compute("1")
+                        .deviceCode("73.OCT_121212")
+                        .coefficient("1")
+                        .radix("0")
+                        .maxRange("1")
+                        .minRange("1")
+                        .filterMutational("0")
+                        .mutationalPe("0")
+                        .saveType("0")
+                        .saveCyc("15")
+                        .deadValue("0")
+                        .count("0")
+                        .showModel("")
+                        .sort("0")
+                        .fertProperty("0")
+                        .details("")
+                        .pointType("0")
+                        .formula("")
+                        .fertCode("0At4l1kxQfCS85eFGjL8NA")
+                        .build();
+                studentMapper.insertTFAccrue(tfAccrue);
+                // 一次性提交事务
+                sqlSession.commit();
+                sqlSession.clearCache();
+            }
         }
-        // 一次性提交事务
-        sqlSession.commit();
-        sqlSession.clearCache();
+
         // 关闭资源
         sqlSession.close();
         long endTime = System.currentTimeMillis();

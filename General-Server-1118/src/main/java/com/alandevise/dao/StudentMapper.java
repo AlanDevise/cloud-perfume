@@ -2,6 +2,7 @@ package com.alandevise.dao;
 
 import com.alandevise.entity.SQL;
 import com.alandevise.entity.Student;
+import com.alandevise.entity.TFAccrue;
 import com.alandevise.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -33,4 +34,6 @@ public interface StudentMapper {
                     @Param("columns") String columns,
                     @Param("val") String val);
     void insertSql3(@Param("SQL") SQL SQL);
+
+    void insertTFAccrue(@Param("TFAccrue") TFAccrue TFAccrue);
 }

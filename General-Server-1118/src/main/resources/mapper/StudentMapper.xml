@@ -39,4 +39,48 @@
         where id = #{id}
     </select>
 
+    <insert id="insertDirectly">
+        ${sqlString}
+    </insert>
+
+    <insert id="insertTFAccrue">
+        insert into t_fert_accrue
+        (`tag_code`,
+         `tag_no`,
+         `tag_name`,
+         `name`,
+         `tag_type`,
+         `tag_class`,
+         `preci`,
+         `unit`,
+         `compute`,
+         `device_code`,
+         `coefficient`,
+         `radix`,
+         `max_range`,
+         `min_range`,
+         `filter_mutational`,
+         `mutational_pe`,
+         `save_type`,
+         `save_cyc`,
+         `dead_value`,
+         `count`,
+         `show_model`,
+         `sort`,
+         `fert_property`,
+         `details`,
+         `point_type`,
+         `formula`,
+         `fert_code`)
+        values (#{TFAccrue.tagCode}, #{TFAccrue.tagNo}, #{TFAccrue.tagName}, #{TFAccrue.name}, #{TFAccrue.tagType},
+                #{TFAccrue.tagClass},
+                #{TFAccrue.preci}, #{TFAccrue.unit}, #{TFAccrue.compute}, #{TFAccrue.deviceCode},
+                #{TFAccrue.coefficient}, #{TFAccrue.radix},
+                #{TFAccrue.maxRange}, #{TFAccrue.minRange}, #{TFAccrue.filterMutational}, #{TFAccrue.mutationalPe},
+                #{TFAccrue.saveType},
+                #{TFAccrue.saveCyc}, #{TFAccrue.deadValue}, #{TFAccrue.count}, #{TFAccrue.showModel}, #{TFAccrue.sort},
+                #{TFAccrue.fertProperty},
+                #{TFAccrue.details}, #{TFAccrue.pointType}, #{TFAccrue.formula}, #{TFAccrue.fertCode})
+    </insert>
+
 </mapper>
