@@ -112,6 +112,7 @@ public class MySQLTest {
      * record: 5W - 1s
      *         50W - 8.2s
      *         100W - 35.2s
+     *         300W - 110.703s
      * */
     @GetMapping("/forSaveBatch")
     public void forSaveBatch() {
@@ -120,12 +121,13 @@ public class MySQLTest {
         //  反射获取，获取Mapper
         StudentMapper studentMapper = sqlSession.getMapper(StudentMapper.class);
         long startTime = System.currentTimeMillis();
-        for (int i = 0; i < 1000000; i++) {
+        for (int i = 0; i < 3000000; i++) {
             Student student = new Student("李毅" + i, 24, "张家界市" + i, i + "号");
             studentMapper.insert(student);
         }
         // 一次性提交事务
         sqlSession.commit();
+        sqlSession.clearCache();
         // 关闭资源
         sqlSession.close();
         long endTime = System.currentTimeMillis();

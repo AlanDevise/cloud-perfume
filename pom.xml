@@ -20,8 +20,8 @@
     <packaging>pom</packaging>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
 
         <!-- <spring-cloud-alibaba-dependencies.version>2.1.0.RELEASE</spring-cloud-alibaba-dependencies.version> -->
         <!-- <spring-cloud-alibaba-dependencies.version>2.2.5.RELEASE</spring-cloud-alibaba-dependencies.version> -->
