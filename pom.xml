@@ -16,6 +16,8 @@
         <module>JJWT-Server-1119</module>
         <module>User-Server-1120</module>
         <module>Gateway-Server-1111</module>
+        <module>Netty-Client-Server</module>
+        <module>Netty-Server</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -64,6 +66,8 @@
         <oauth2.version>2.2.5.RELEASE</oauth2.version>
         <spring-cloud-starter-security.version>2.2.5.RELEASE</spring-cloud-starter-security.version>
         <spring-boot-starter-aop.version>2.6.4</spring-boot-starter-aop.version>
+        <!-- <netty-all.version>4.1.82.Final</netty-all.version> -->
+        <netty-all.version>5.0.0.Alpha1</netty-all.version>
     </properties>
 
     <dependencyManagement>
@@ -256,6 +260,13 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-aop</artifactId>
                 <version>${spring-boot-starter-aop.version}</version>
+            </dependency>
+
+            <!-- [OPTIONAL] netty -->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>${netty-all.version}</version>
             </dependency>
 
         </dependencies>

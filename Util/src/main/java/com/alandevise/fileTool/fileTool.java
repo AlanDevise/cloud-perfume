@@ -1,6 +1,5 @@
 package com.alandevise.fileTool;
 
-import jdk.internal.org.jline.utils.Log;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -39,9 +38,9 @@ public class fileTool {
         try {
             Files.copy(source, target);
         } catch (FileAlreadyExistsException exception) {
-            Log.info("[EXCEPTION] 文件或路径已存在");
+            log.info("[EXCEPTION] 文件或路径已存在");
         } catch (IOException exception) {
-            Log.info("[EXCEPTION] 拷贝文件失败");
+            log.info("[EXCEPTION] 拷贝文件失败");
         }
     }
 
@@ -54,7 +53,7 @@ public class fileTool {
         try {
             Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException exception) {
-            Log.info("[EXCEPTION] 拷贝文件失败");
+            log.info("[EXCEPTION] 拷贝文件失败");
         }
     }
 
@@ -75,7 +74,7 @@ public class fileTool {
         try {
             Files.move(source, target, StandardCopyOption.ATOMIC_MOVE);
         } catch (IOException exception) {
-            Log.info("[EXCEPTION] 移动文件失败");
+            log.info("[EXCEPTION] 移动文件失败");
         }
     }
 
@@ -87,11 +86,11 @@ public class fileTool {
         try {
             Files.delete(target);
         } catch (DirectoryNotEmptyException exception) {
-            Log.info("[EXCEPTION] 该路径不为空，无法删除");
+            log.info("[EXCEPTION] 该路径不为空，无法删除");
         } catch (NoSuchFileException exception) {
-            Log.info("[EXCEPTION] 该路径下文件不存在");
+            log.info("[EXCEPTION] 该路径下文件不存在");
         } catch (IOException exception) {
-            Log.info("[EXCEPTION] 删除文件操作异常");
+            log.info("[EXCEPTION] 删除文件操作异常");
         }
     }
 
@@ -103,14 +102,14 @@ public class fileTool {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 Files.delete(file);
-                Log.info(file+" 已被删除");
+                log.info(file+" 已被删除");
                 return super.visitFile(file, attrs);
             }
 
             @Override
             public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
                 Files.delete(dir);
-                Log.info(dir+" 已被删除");
+                log.info(dir+" 已被删除");
                 return super.postVisitDirectory(dir, exc);
             }
         });
