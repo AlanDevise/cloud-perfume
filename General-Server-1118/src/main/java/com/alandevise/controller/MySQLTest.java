@@ -7,6 +7,7 @@ import com.alandevise.entity.TFAccrue;
 import com.alandevise.entity.User;
 import com.alandevise.service.UserService;
 import com.alandevise.util.QuartzUtils;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -138,97 +140,135 @@ public class MySQLTest {
 
         // -------------------------------------------------------------------------
 
-        // Mapper直接执行SQL语句
-        //  开启批量处理模式 BATCH 、关闭自动提交事务 false
-        SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, false);
-        //  反射获取，获取Mapper
-        StudentMapper studentMapper = sqlSession.getMapper(StudentMapper.class);
-        long startTime = System.currentTimeMillis();
-        for (int i = 0; i < 10; i++) {
-
-            // String sql = "insert into student (`name`, age, addr, addr_num) values ('李毅', '27','深圳市', '123456')";
-            // String sql = "insert into student (`name`, age, addr, addr_num) values ('李毅', '27','深圳市', '123456')";
-            // String sql = "insert into student (`name`, age, addr, addr_num) values ('李毅', '27','深圳市', '123456')";
-
-            for (int j = 0; j < 1000; j++) {
-                // SQL sqlStr = new SQL("student", "`name`, age, addr, addr_num", "'李毅', '27','深圳市', '123456'");
-                TFAccrue tfAccrue = TFAccrue.builder()
-                        .tagCode("73.OCT_121212.0.EPd")
-                        .tagNo("40")
-                        .tagName("EPd")
-                        .name("1212_日冻结正向有功总电能")
-                        .tagType("0")
-                        .tagClass("0")
-                        .preci("2")
-                        .unit("0")
-                        .compute("1")
-                        .deviceCode("73.OCT_121212")
-                        .coefficient("1")
-                        .radix("0")
-                        .maxRange("1")
-                        .minRange("1")
-                        .filterMutational("0")
-                        .mutationalPe("0")
-                        .saveType("0")
-                        .saveCyc("15")
-                        .deadValue("0")
-                        .count("0")
-                        .showModel("")
-                        .sort("0")
-                        .fertProperty("0")
-                        .details("")
-                        .pointType("0")
-                        .formula("")
-                        .fertCode("0At4l1kxQfCS85eFGjL8NA")
-                        .build();
-                studentMapper.insertTFAccrue(tfAccrue);
-                // 一次性提交事务
-                sqlSession.commit();
-                sqlSession.clearCache();
-            }
-        }
-
-        // 关闭资源
-        sqlSession.close();
-        long endTime = System.currentTimeMillis();
-        log.error("总耗时： " + (endTime - startTime));
-
-
+        // // Mapper直接执行SQL语句
+        // //  开启批量处理模式 BATCH 、关闭自动提交事务 false
+        // SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, false);
+        // //  反射获取，获取Mapper
+        // StudentMapper studentMapper = sqlSession.getMapper(StudentMapper.class);
+        // long startTime = System.currentTimeMillis();
+        // for (int i = 0; i < 10; i++) {
+        //
+        //     // String sql = "insert into student (`name`, age, addr, addr_num) values ('李毅', '27','深圳市', '123456')";
+        //     // String sql = "insert into student (`name`, age, addr, addr_num) values ('李毅', '27','深圳市', '123456')";
+        //     // String sql = "insert into student (`name`, age, addr, addr_num) values ('李毅', '27','深圳市', '123456')";
+        //
+        //     for (int j = 0; j < 10000; j++) {
+        //         // SQL sqlStr = new SQL("student", "`name`, age, addr, addr_num", "'李毅', '27','深圳市', '123456'");
+        //         TFAccrue tfAccrue = TFAccrue.builder()
+        //                 .tagCode("73.OCT_121212.0.EPd" + "_" + i + j)
+        //                 .tagNo("40")
+        //                 .tagName("EPd")
+        //                 .name("1212_日冻结正向有功总电能")
+        //                 .tagType("0")
+        //                 .tagClass("0")
+        //                 .preci("2")
+        //                 .unit("0")
+        //                 .compute("1")
+        //                 .deviceCode("73.OCT_121212")
+        //                 .coefficient("1")
+        //                 .radix("0")
+        //                 .maxRange("1")
+        //                 .minRange("1")
+        //                 .filterMutational("0")
+        //                 .mutationalPe("0")
+        //                 .saveType("0")
+        //                 .saveCyc("15")
+        //                 .deadValue("0")
+        //                 .count("0")
+        //                 .showModel("")
+        //                 .sort("0")
+        //                 .fertProperty("0")
+        //                 .details("")
+        //                 .pointType("0")
+        //                 .formula("")
+        //                 .fertCode("0At4l1kxQfCS85eFGjL8NA")
+        //                 .build();
+        //         studentMapper.insertTFAccrue(tfAccrue);
+        //         // 一次性提交事务
+        //         sqlSession.commit();
+        //         sqlSession.clearCache();
+        //     }
+        // }
+        //
+        // // 关闭资源
+        // sqlSession.close();
+        // long endTime = System.currentTimeMillis();
+        // log.error("总耗时： " + (endTime - startTime) / 1000 + "秒");
 
 
         // -------------------------------------------------------------------------
 
 
-        // SqlSession sqlSession = null;
-        // Statement statement = null;
-        // long startTime = System.currentTimeMillis();
-        // try {
-        //
-        //     sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);
-        //     statement = sqlSession.getConnection().createStatement();
-        //     for (int i = 0; i < 1000000; i++) {
-        //         statement.addBatch("insert into student (`name`, age, addr, addr_num) values ('李毅', '27','深圳市', '123456')");
-        //         // if ((i % 50000 == 0) || i == 50000) {
-        //         //
-        //         //     log.info("=== 执行批处理 {} 条",i);
-        //         // }
-        //     }
-        //     statement.executeBatch();
-        //     statement.clearBatch();
-        // } finally {
-        //     if (statement != null) {
-        //         try {
-        //             statement.clearBatch();
-        //             statement.close();
-        //         } catch (SQLException throwables) {
-        //             throwables.printStackTrace();
-        //         }
-        //     }
-        // }
-        // sqlSession.commit();
-        // sqlSession.close();
-        // long endTime = System.currentTimeMillis();
-        // log.info("总耗时： " + (endTime - startTime));
+        SqlSession sqlSession;
+        Statement statement = null;
+        long startTime = System.currentTimeMillis();
+        try {
+            int BATCH_SIZE = 1500;
+            int DATA_COUNT = 100000;
+            sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);
+            statement = sqlSession.getConnection().createStatement();
+            for (int i = 0; i < DATA_COUNT; i++) {
+
+                String sql = "insert into t_fert_accrue " +
+                        "        (`tag_code`," +
+                        "         `tag_no`, " +
+                        "         `tag_name`, " +
+                        "         `name`, " +
+                        "         `tag_type`, " +
+                        "         `tag_class`, " +
+                        "         `preci`, " +
+                        "         `unit`, " +
+                        "         `compute`, " +
+                        "         `device_code`, " +
+                        "         `coefficient`, " +
+                        "         `radix`, " +
+                        "         `max_range`, " +
+                        "         `min_range`, " +
+                        "         `filter_mutational`, " +
+                        "         `mutational_pe`, " +
+                        "         `save_type`, " +
+                        "         `save_cyc`, " +
+                        "         `dead_value`, " +
+                        "         `count`, " +
+                        "         `show_model`, " +
+                        "         `sort`, " +
+                        "         `fert_property`, " +
+                        "         `details`, " +
+                        "         `point_type`, " +
+                        "         `formula`, " +
+                        "         `fert_code`) " +
+                        "        values ('73.OCT_121212.0.EPd" + i + "'" + ", '1', '1', '1', '1', " +
+                        "                '1'," +
+                        "                '1', '1', '1', '1', " +
+                        "                '1', '1', " +
+                        "                '1', '1', '1', '1', " +
+                        "                '1', " +
+                        "                '1', '1', '1', '1', '1', " +
+                        "                '1', " +
+                        "                '1','1', '1','1')";
+
+                statement.addBatch(sql);
+                if ((i % BATCH_SIZE == 0) || i == DATA_COUNT - 1) {
+                    statement.executeBatch();
+                    statement.clearBatch();
+                    log.info("=== 执行批处理 {} 条", i);
+                }
+            }
+            sqlSession.commit();
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.clearBatch();
+                    statement.close();
+                } catch (SQLException throwable) {
+                    throwable.printStackTrace();
+                }
+            }
+        }
+        sqlSession.commit();
+        sqlSession.close();
+        long endTime = System.currentTimeMillis();
+        log.info("总耗时： " + (endTime - startTime) / 1000 + "秒");
     }
 
     @RequestMapping("/create")
