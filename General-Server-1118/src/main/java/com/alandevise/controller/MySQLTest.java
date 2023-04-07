@@ -11,16 +11,21 @@ import com.alandevise.util.QuartzUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.quartz.Scheduler;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 /**
@@ -108,7 +113,7 @@ public class MySQLTest {
         }
         studentMapper.insertSplice(arrayList);
         long endTime = System.currentTimeMillis();
-        System.out.println("插入数据消耗时间：" + (endTime - startTime));
+        System.out.println("插入数据消耗时间：" + (endTime - startTime) / 1000.0);
     }
 
     /*
@@ -125,7 +130,7 @@ public class MySQLTest {
         // //  反射获取，获取Mapper
         // StudentMapper studentMapper = sqlSession.getMapper(StudentMapper.class);
         // long startTime = System.currentTimeMillis();
-        // for (int i = 0; i < 50000; i++) {
+        // for (int i = 0; i < 10000; i++) {
         //     Student student = new Student("李毅" + i, 24, "张家界市" + i, i + "号");
         //     studentMapper.insert(student);
         // }
@@ -203,49 +208,51 @@ public class MySQLTest {
         Statement statement = null;
         long startTime = System.currentTimeMillis();
         try {
-            int BATCH_SIZE = 1500;
-            int DATA_COUNT = 100000;
+            int BATCH_SIZE = 10000;
+            int DATA_COUNT = 10000;
             sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);
             statement = sqlSession.getConnection().createStatement();
             for (int i = 0; i < DATA_COUNT; i++) {
 
-                String sql = "insert into t_fert_accrue " +
-                        "        (`tag_code`," +
-                        "         `tag_no`, " +
-                        "         `tag_name`, " +
-                        "         `name`, " +
-                        "         `tag_type`, " +
-                        "         `tag_class`, " +
-                        "         `preci`, " +
-                        "         `unit`, " +
-                        "         `compute`, " +
-                        "         `device_code`, " +
-                        "         `coefficient`, " +
-                        "         `radix`, " +
-                        "         `max_range`, " +
-                        "         `min_range`, " +
-                        "         `filter_mutational`, " +
-                        "         `mutational_pe`, " +
-                        "         `save_type`, " +
-                        "         `save_cyc`, " +
-                        "         `dead_value`, " +
-                        "         `count`, " +
-                        "         `show_model`, " +
-                        "         `sort`, " +
-                        "         `fert_property`, " +
-                        "         `details`, " +
-                        "         `point_type`, " +
-                        "         `formula`, " +
-                        "         `fert_code`) " +
-                        "        values ('73.OCT_121212.0.EPd" + i + "'" + ", '1', '1', '1', '1', " +
-                        "                '1'," +
-                        "                '1', '1', '1', '1', " +
-                        "                '1', '1', " +
-                        "                '1', '1', '1', '1', " +
-                        "                '1', " +
-                        "                '1', '1', '1', '1', '1', " +
-                        "                '1', " +
-                        "                '1','1', '1','1')";
+                // String sql = "insert into t_fert_accrue " +
+                //         "        (`tag_code`," +
+                //         "         `tag_no`, " +
+                //         "         `tag_name`, " +
+                //         "         `name`, " +
+                //         "         `tag_type`, " +
+                //         "         `tag_class`, " +
+                //         "         `preci`, " +
+                //         "         `unit`, " +
+                //         "         `compute`, " +
+                //         "         `device_code`, " +
+                //         "         `coefficient`, " +
+                //         "         `radix`, " +
+                //         "         `max_range`, " +
+                //         "         `min_range`, " +
+                //         "         `filter_mutational`, " +
+                //         "         `mutational_pe`, " +
+                //         "         `save_type`, " +
+                //         "         `save_cyc`, " +
+                //         "         `dead_value`, " +
+                //         "         `count`, " +
+                //         "         `show_model`, " +
+                //         "         `sort`, " +
+                //         "         `fert_property`, " +
+                //         "         `details`, " +
+                //         "         `point_type`, " +
+                //         "         `formula`, " +
+                //         "         `fert_code`) " +
+                //         "        values ('73.OCT_121212.0.EPd" + i + "'" + ", '1', '1', '1', '1', " +
+                //         "                '1'," +
+                //         "                '1', '1', '1', '1', " +
+                //         "                '1', '1', " +
+                //         "                '1', '1', '1', '1', " +
+                //         "                '1', " +
+                //         "                '1', '1', '1', '1', '1', " +
+                //         "                '1', " +
+                //         "                '1','1', '1','1')";
+
+                String sql = "insert into student (name,age,addr,addr_num) values ('李毅','20','深圳市','号')";
 
                 statement.addBatch(sql);
                 if ((i % BATCH_SIZE == 0) || i == DATA_COUNT - 1) {
@@ -254,7 +261,7 @@ public class MySQLTest {
                     log.info("=== 执行批处理 {} 条", i);
                 }
             }
-            sqlSession.commit();
+            // sqlSession.commit();
         } finally {
             if (statement != null) {
                 try {
@@ -268,7 +275,57 @@ public class MySQLTest {
         sqlSession.commit();
         sqlSession.close();
         long endTime = System.currentTimeMillis();
-        log.info("总耗时： " + (endTime - startTime) / 1000 + "秒");
+        log.warn("总耗时： " + (endTime - startTime) / 1000.0 + "秒");
+    }
+
+    /*
+     * MySQL流式查询
+     * */
+    @GetMapping("/forStreamSearch")
+    public void forStreamSearch() throws SQLException {
+
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.setKeepTaskList(false);
+        stopWatch.start();
+        int count = 0;
+
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        Connection connection = sqlSession.getConnection();
+        Statement statement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+        statement.setFetchSize(Integer.MIN_VALUE);
+        ResultSet resultSet = statement.executeQuery("select * from t_fert_accrue;");
+        while (resultSet.next()) {
+            String tagCode = resultSet.getString("tag_code");
+            log.warn(tagCode);
+            count++;
+        }
+        stopWatch.stop();
+        log.warn("Count is " + count);
+        log.warn("耗时：" + stopWatch.getLastTaskTimeMillis() / 1000.0 + "秒");
+    }
+
+    /*
+     * MySQL - Mapper查询
+     * */
+    @GetMapping("/forMapperSearch")
+    public void forMapperSearch() {
+
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.setKeepTaskList(false);
+        stopWatch.start();
+        int count = 0;
+
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        StudentMapper mapper = sqlSession.getMapper(StudentMapper.class);
+        Cursor<TFAccrue> cursor = mapper.selectInfo(null);
+        while (cursor.iterator().hasNext()) {
+            String tagCode = cursor.iterator().next().getTagCode();
+            log.info(tagCode);
+            count++;
+        }
+        stopWatch.stop();
+        log.warn("Count is " + count);
+        log.warn("耗时：" + stopWatch.getLastTaskTimeMillis() / 1000.0 + "秒");
     }
 
     @RequestMapping("/create")

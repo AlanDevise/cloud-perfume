@@ -6,6 +6,7 @@ import com.alandevise.entity.TFAccrue;
 import com.alandevise.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.cursor.Cursor;
 
 import java.util.List;
 
@@ -36,4 +37,6 @@ public interface StudentMapper {
     void insertSql3(@Param("SQL") SQL SQL);
 
     void insertTFAccrue(@Param("TFAccrue") TFAccrue TFAccrue);
+
+    Cursor<TFAccrue> selectInfo(@Param("SQL") String SQL);
 }

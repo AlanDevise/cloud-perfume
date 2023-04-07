@@ -39,6 +39,11 @@
         where id = #{id}
     </select>
 
+    <select id="selectInfo" resultType="com.alandevise.entity.TFAccrue" resultSetType="FORWARD_ONLY" fetchSize="1">
+        select *
+        from t_fert_accrue;
+    </select>
+
     <insert id="insertDirectly">
         ${sqlString}
     </insert>
