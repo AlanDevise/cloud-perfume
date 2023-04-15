@@ -39,4 +39,6 @@ public interface StudentMapper {
     void insertTFAccrue(@Param("TFAccrue") TFAccrue TFAccrue);
 
     Cursor<TFAccrue> selectInfo(@Param("SQL") String SQL);
+
+    void insertId(@Param("id") String id);
 }

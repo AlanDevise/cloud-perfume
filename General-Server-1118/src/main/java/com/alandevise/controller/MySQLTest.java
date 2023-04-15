@@ -1,5 +1,6 @@
 package com.alandevise.controller;
 
+import cn.hutool.core.util.IdUtil;
 import com.alandevise.dao.StudentMapper;
 import com.alandevise.entity.QuartzBean;
 import com.alandevise.entity.Student;
@@ -7,7 +8,6 @@ import com.alandevise.entity.TFAccrue;
 import com.alandevise.entity.User;
 import com.alandevise.service.UserService;
 import com.alandevise.util.QuartzUtils;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
 /**
@@ -416,6 +415,25 @@ public class MySQLTest {
             return "删除定时任务失败";
         }
         return "删除定时任务成功";
+    }
+
+    @RequestMapping("/testID")
+    @ResponseBody
+    public String testID() {
+        try {
+            for (int i = 0; i < 200; i++) {
+                new Thread(() -> {
+                    for (int j = 0; j < 2000; j++) {
+                        String snowFlakeID = IdUtil.getSnowflake().nextIdStr();
+                        log.info(snowFlakeID);
+                        studentMapper.insertId(snowFlakeID);
+                    }
+                }, "MyThread - " + i).start();
+            }
+        } catch (Exception e) {
+            return "执行失败";
+        }
+        return "执行成功";
     }
 
 

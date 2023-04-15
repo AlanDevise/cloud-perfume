@@ -6,7 +6,7 @@
         insert into student (`name`, age, addr, addr_num)
         values (#{student.name}, #{student.age}, #{student.addr}, #{student.addrNum})
     </insert>
-    
+
     <insert id="insertSplice">
         insert into student (`name`, age, addr, addr_num) values
         <foreach collection="studentList" item="item" separator=",">
@@ -86,6 +86,11 @@
                 #{TFAccrue.saveCyc}, #{TFAccrue.deadValue}, #{TFAccrue.count}, #{TFAccrue.showModel}, #{TFAccrue.sort},
                 #{TFAccrue.fertProperty},
                 #{TFAccrue.details}, #{TFAccrue.pointType}, #{TFAccrue.formula}, #{TFAccrue.fertCode})
+    </insert>
+
+    <insert id="insertId">
+        insert into t_id
+        values (#{id})
     </insert>
 
 </mapper>
