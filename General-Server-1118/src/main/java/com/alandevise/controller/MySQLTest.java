@@ -24,8 +24,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * @Filename: MySQLTest.java
@@ -484,4 +483,14 @@ public class MySQLTest {
     //         }
     //     }
     // }
+    public static void main(String[] args) {
+        List<String> testList = new ArrayList<>();
+        testList.add("asdf");
+        testList.add("viejbrgv");
+        Optional.ofNullable(testList).orElse(Collections.emptyList()).forEach(System.out::println);
+        Optional.ofNullable(testList).orElse(Collections.emptyList()).forEach(log::info);
+        if (!testList.isEmpty()){
+            testList.forEach(System.out::println);
+        }
+    }
 }
