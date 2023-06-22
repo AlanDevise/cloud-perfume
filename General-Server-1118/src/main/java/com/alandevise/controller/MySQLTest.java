@@ -7,6 +7,7 @@ import com.alandevise.entity.Student;
 import com.alandevise.entity.TFAccrue;
 import com.alandevise.entity.User;
 import com.alandevise.service.UserService;
+import com.alandevise.util.IGlobalCache;
 import com.alandevise.util.QuartzUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,6 +17,7 @@ import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.quartz.Scheduler;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +42,10 @@ import java.util.*;
 @Api(tags = "MySQL测试接口", value = "MySQL测试接口")
 @Slf4j
 public class MySQLTest {
+    // Redis消息通道1
+    public final String ChannelOne = "ChannelOne";
+    // Redis消息通道2
+    public final String ChannelTwo = "ChannelTwo";
     @Resource
     StudentMapper studentMapper;
     @Resource
@@ -49,6 +55,10 @@ public class MySQLTest {
     // 注入任务调度
     @Resource
     private Scheduler scheduler;
+    @Resource
+    private IGlobalCache iGlobalCache;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     // @Autowired
     // private FolderTree folderTree;
@@ -483,13 +493,20 @@ public class MySQLTest {
     //         }
     //     }
     // }
+
+    @PostMapping("/send")
+    public void sendMessage(@RequestParam(value = "channelName") String channelName,
+                            @RequestParam(value = "content") String content) {
+        stringRedisTemplate.convertAndSend(channelName, content);
+    }
+
     public static void main(String[] args) {
         List<String> testList = new ArrayList<>();
         testList.add("asdf");
         testList.add("viejbrgv");
         Optional.ofNullable(testList).orElse(Collections.emptyList()).forEach(System.out::println);
         Optional.ofNullable(testList).orElse(Collections.emptyList()).forEach(log::info);
-        if (!testList.isEmpty()){
+        if (!testList.isEmpty()) {
             testList.forEach(System.out::println);
         }
     }
