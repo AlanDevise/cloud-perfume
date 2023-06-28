@@ -504,7 +504,7 @@ public class MySQLTest {
     @GetMapping("/invokeScheduledTask")
     public void invokeScheduledTask() {
         System.out.println("[INFO] 手动触发一次");
-        ScheduledTask.test2();
+        ScheduledTask.test();
         System.out.println("[INFO] 手动触发结束");
     }
 
