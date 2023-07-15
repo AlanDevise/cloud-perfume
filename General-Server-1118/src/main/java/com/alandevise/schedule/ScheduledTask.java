@@ -1,7 +1,12 @@
 package com.alandevise.schedule;
 
+import com.alandevise.dao.StudentMapper;
+import com.alandevise.entity.tUser;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @Filename: ScheduledTask.java
@@ -14,8 +19,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ScheduledTask {
+    @Resource
+    StudentMapper studentMapper;
+
     @Scheduled(fixedDelay = 10000)
-    public static void test() {
+    public void test() {
         System.out.println("[INFO " + System.currentTimeMillis() + "] 定时任务在行动。");
+        List<tUser> tUsers = studentMapper.AllUser();
+        System.out.println(tUsers);
     }
+
 }

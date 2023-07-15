@@ -6,7 +6,6 @@ import com.alandevise.entity.QuartzBean;
 import com.alandevise.entity.Student;
 import com.alandevise.entity.TFAccrue;
 import com.alandevise.entity.User;
-import com.alandevise.schedule.ScheduledTask;
 import com.alandevise.service.UserService;
 import com.alandevise.util.IGlobalCache;
 import com.alandevise.util.QuartzUtils;
@@ -501,12 +500,12 @@ public class MySQLTest {
         stringRedisTemplate.convertAndSend(channelName, content);
     }
 
-    @GetMapping("/invokeScheduledTask")
-    public void invokeScheduledTask() {
-        System.out.println("[INFO] 手动触发一次");
-        ScheduledTask.test();
-        System.out.println("[INFO] 手动触发结束");
-    }
+    // @GetMapping("/invokeScheduledTask")
+    // public void invokeScheduledTask() {
+    //     System.out.println("[INFO] 手动触发一次");
+    //     ScheduledTask.test();
+    //     System.out.println("[INFO] 手动触发结束");
+    // }
 
     public static void main(String[] args) {
         List<String> testList = new ArrayList<>();

@@ -1,11 +1,9 @@
 package com.alandevise.dao;
 
-import com.alandevise.entity.SQL;
-import com.alandevise.entity.Student;
-import com.alandevise.entity.TFAccrue;
-import com.alandevise.entity.User;
+import com.alandevise.entity.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.cursor.Cursor;
 
 import java.util.List;
@@ -34,6 +32,7 @@ public interface StudentMapper {
     void insertSql2(@Param("tableName2") String tableName2,
                     @Param("columns") String columns,
                     @Param("val") String val);
+
     void insertSql3(@Param("SQL") SQL SQL);
 
     void insertTFAccrue(@Param("TFAccrue") TFAccrue TFAccrue);
@@ -41,4 +40,7 @@ public interface StudentMapper {
     Cursor<TFAccrue> selectInfo(@Param("SQL") String SQL);
 
     void insertId(@Param("id") String id);
+
+    @Select("select * from t_user")
+    List<tUser> AllUser();
 }
