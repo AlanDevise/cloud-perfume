@@ -1,9 +1,6 @@
 server:
   port: 1118
 spring:
-  application:
-    # 服务注册时使用的名称
-    name: General-Server-Service
   datasource:
 #    # 当前数据源操作类型
     #    type: com.alibaba.druid.pool.DruidDataSource

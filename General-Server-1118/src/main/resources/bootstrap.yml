@@ -1,0 +1,12 @@
+spring:
+  application:
+    # 服务注册时使用的名称[使用Nacos时，服务名称一定要和配置中心一样写在bootstrap，否则会被解析成null.properties]
+    name: General-Server-Service
+  cloud:
+    nacos:
+      # 服务发现地址
+      server-addr: 127.0.0.1:8848
+      # 配置中心地址
+      config:
+        server-addr: 127.0.0.1:8848
+        prefix: general-config

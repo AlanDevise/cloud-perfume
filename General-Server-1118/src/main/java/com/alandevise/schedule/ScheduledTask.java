@@ -3,7 +3,6 @@ package com.alandevise.schedule;
 import com.alandevise.dao.StudentMapper;
 import com.alandevise.entity.tUser;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -17,7 +16,7 @@ import java.util.List;
  * @Date: 2023年06月28日 22:06
  */
 
-@Component
+// @Component
 public class ScheduledTask {
     @Resource
     StudentMapper studentMapper;
