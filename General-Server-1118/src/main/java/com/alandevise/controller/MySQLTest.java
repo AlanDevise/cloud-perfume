@@ -2,10 +2,7 @@ package com.alandevise.controller;
 
 import cn.hutool.core.util.IdUtil;
 import com.alandevise.dao.StudentMapper;
-import com.alandevise.entity.QuartzBean;
-import com.alandevise.entity.Student;
-import com.alandevise.entity.TFAccrue;
-import com.alandevise.entity.User;
+import com.alandevise.entity.*;
 import com.alandevise.service.UserService;
 import com.alandevise.util.IGlobalCache;
 import com.alandevise.util.QuartzUtils;
@@ -18,14 +15,13 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.quartz.Scheduler;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.io.IOException;
+import java.sql.*;
 import java.util.*;
 
 /**
@@ -517,4 +513,149 @@ public class MySQLTest {
             testList.forEach(System.out::println);
         }
     }
+
+    @GetMapping("mybatisOnce")
+    public void testBatchInsertUser() throws IOException {
+        try (SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH, false)) {
+            System.out.println("===== 开始插入数据 =====");
+            long startTime = System.currentTimeMillis();
+            List<t_test_user> userList = new ArrayList<>();
+            for (int i = 1; i <= 300000; i++) {
+                // User user = new User();
+                t_test_user tTestUser = new t_test_user();
+                tTestUser.setId(i);
+                tTestUser.setUsername("共饮一杯无 " + i);
+                tTestUser.setAge((int) (Math.random() * 100));
+                userList.add(tTestUser);
+            }
+            session.insert("batchInsertUser", userList); // 最后插入剩余的数据
+            session.commit();
+
+            long spendTime = System.currentTimeMillis() - startTime;
+            System.out.println("成功插入 30 万条数据,耗时：" + spendTime + "毫秒");
+        }
+    }
+
+    @GetMapping("mybatisLoopInsert")
+    public void testCirculateInsertUser() throws IOException {
+        SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH, false);
+        System.out.println("===== 开始插入数据 =====");
+        long startTime = System.currentTimeMillis();
+        try {
+            for (int i = 1; i <= 300000; i++) {
+                t_test_user user = new t_test_user();
+                user.setId(i);
+                user.setUsername("共饮一杯无 " + i);
+                user.setAge((int) (Math.random() * 100));
+                // 一条一条新增
+                session.insert("insertUser", user);
+                session.commit();
+            }
+
+            long spendTime = System.currentTimeMillis() - startTime;
+            System.out.println("成功插入 30 万条数据,耗时：" + spendTime + "毫秒");
+        } finally {
+            session.close();
+        }
+    }
+
+    @GetMapping("mybatisBatchInsert")
+    public void mybatisBatchInsert() throws IOException {
+        try (SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH, false)) {
+            System.out.println("===== 开始插入数据 =====");
+            long startTime = System.currentTimeMillis();
+            List<t_test_user> userList = new ArrayList<>();
+            for (int i = 1; i <= 300000; i++) {
+                t_test_user user = new t_test_user();
+                user.setId(i);
+                user.setUsername("共饮一杯无 " + i);
+                user.setAge((int) (Math.random() * 100));
+                userList.add(user);
+                if (i % 5000 == 0) {
+                    session.insert("batchInsertUser", userList);
+                    // 每 1000 条数据提交一次事务
+                    session.commit();
+                    userList.clear();
+                }
+            }
+            // 最后插入剩余的数据
+            if (!CollectionUtils.isEmpty(userList)) {
+                session.insert("batchInsertUser", userList);
+                session.commit();
+            }
+
+            long spendTime = System.currentTimeMillis() - startTime;
+            System.out.println("成功插入 30 万条数据,耗时：" + spendTime + "毫秒");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * JDBC分批次批量插入
+     */
+    @GetMapping("testJDBCBatchInsertUser")
+    public void testJDBCBatchInsertUser() {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        String databaseURL = "jdbc:mysql://localhost:3306/AlanDeviseDatabase?useUnicode=true&characterEncoding=utf8&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true";
+        String user = "root";
+        String password = "AlanDevise2020";
+
+        int count = 3000000;
+        int batchSize = 10000;
+
+        try {
+            connection = DriverManager.getConnection(databaseURL, user, password);
+            // 关闭自动提交事务，改为手动提交
+            connection.setAutoCommit(false);
+            System.out.println("===== 开始插入数据 =====");
+            long startTime = System.currentTimeMillis();
+            String sqlInsert = "INSERT INTO t_user ( username, age) VALUES ( ?, ?)";
+            preparedStatement = connection.prepareStatement(sqlInsert);
+
+            Random random = new Random();
+            for (int i = 1; i <= count; i++) {
+                preparedStatement.setString(1, "共饮一杯无 " + i);
+                preparedStatement.setInt(2, random.nextInt(100));
+                // 添加到批处理中
+                preparedStatement.addBatch();
+
+                if (i % batchSize == 0) {
+                    // 每1000条数据提交一次
+                    preparedStatement.executeBatch();
+                    connection.commit();
+                    System.out.println("成功插入第 " + i + " 条数据");
+                }
+
+            }
+            // 处理剩余的数据
+            preparedStatement.executeBatch();
+            connection.commit();
+            long spendTime = System.currentTimeMillis() - startTime;
+            System.out.println("成功插入 " + count / 10000 + " 万条数据,耗时：" + spendTime + "毫秒");
+            System.out.println("批大小：" + batchSize);
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
 }

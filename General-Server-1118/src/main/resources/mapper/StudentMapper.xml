@@ -93,4 +93,20 @@
         values (#{id})
     </insert>
 
+    <insert id="batchInsertUser">
+        insert into t_user(username,age) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.username},
+            #{item.age}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="insertUser">
+        insert into t_user(username, age)
+        values (#{username},
+                #{age})
+    </insert>
+
 </mapper>

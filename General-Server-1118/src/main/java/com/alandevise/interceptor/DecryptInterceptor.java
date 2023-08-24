@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.plugin.*;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -29,7 +28,7 @@ import java.util.Objects;
         @Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {Statement.class})
 })
 @Slf4j
-@Component
+// @Component
 public class DecryptInterceptor implements Interceptor, HandlerInterceptor {
     @Override
     public Object intercept(Invocation invocation) throws Throwable {

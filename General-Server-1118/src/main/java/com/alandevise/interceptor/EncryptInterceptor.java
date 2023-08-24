@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.plugin.*;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.lang.reflect.Field;
@@ -26,7 +25,7 @@ import java.util.Objects;
 
 
 @Slf4j
-@Component
+// @Component
 @Intercepts({
         @Signature(type = ParameterHandler.class, method = "setParameters", args = {PreparedStatement.class}),
 })

@@ -43,4 +43,13 @@ public interface StudentMapper {
 
     @Select("select * from t_user")
     List<tUser> AllUser();
+
+    /**
+     * 批量插入用户
+     *
+     * @param userList 用户列表
+     */
+    void batchInsertUser(@Param("list") List<t_test_user> userList);
+
+    void insertUser(t_test_user tTestUser);
 }
