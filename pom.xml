@@ -19,6 +19,7 @@
         <module>Netty-Client-Server</module>
         <module>Netty-Server</module>
         <module>Logger-Server-1120</module>
+        <module>Elasticsearch-Server-1121</module>
     </modules>
     <packaging>pom</packaging>
 
