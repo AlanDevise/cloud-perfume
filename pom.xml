@@ -18,6 +18,7 @@
         <module>Gateway-Server-1111</module>
         <module>Netty-Client-Server</module>
         <module>Netty-Server</module>
+        <module>Logger-Server-1120</module>
     </modules>
     <packaging>pom</packaging>
 
