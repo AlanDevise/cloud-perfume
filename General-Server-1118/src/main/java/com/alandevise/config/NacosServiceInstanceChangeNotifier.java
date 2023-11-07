@@ -14,7 +14,7 @@ import javax.annotation.PostConstruct;
  * @Filename: NacosServiceInstanceChangeNotifier.java
  * @Package: com.alandevise.config
  * @Version: V1.0.0
- * @Description: 1.
+ * @Description: 1. 监听本服务在Nacos中的上下线信息
  * @Author: Alan Zhang [initiator@alandevise.com]
  * @Date: 2023年11月07日 22:49
  */
