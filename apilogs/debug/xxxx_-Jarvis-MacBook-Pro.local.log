@@ -1,1 +1,0 @@
-2023-10-21 22:34:16,886 DEBUG [main] o.a.i.l.LogFactory Logging initialized using 'class org.apache.ibatis.logging.slf4j.Slf4jImpl' adapter.
