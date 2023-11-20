@@ -1,11 +1,9 @@
 # Project exclude paths
-/Payment-Consumer-9002/target/
-/Payment-Provider-9001/target/
-/Payment-Provider-9003/target/
-/General-Server-1118/target/
-/.idea/vcs.xml
-/.idea/
-/apilogs/
-/Gateway-Server-1111/target/
-/User-Server-1120/target/
-/apilogs/
+#忽略所有.svn目录
+.svn/
+#忽略所有target目录
+target/
+#忽略所有.idea目录
+.idea/
+#忽略所有.iml文件
+*.iml
