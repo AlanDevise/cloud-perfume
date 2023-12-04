@@ -7,5 +7,6 @@ target/
 .idea/
 #忽略所有.iml文件
 *.iml
+*.class
 */*/target/
 /User-Server-1120/target/
