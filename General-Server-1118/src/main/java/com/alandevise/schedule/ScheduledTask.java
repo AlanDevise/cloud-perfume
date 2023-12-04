@@ -3,6 +3,7 @@ package com.alandevise.schedule;
 import com.alandevise.dao.StudentMapper;
 import com.alandevise.entity.tUser;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;

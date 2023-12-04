@@ -21,8 +21,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * @Filename: MySQLTest.java
@@ -503,17 +507,6 @@ public class MySQLTest {
     //     System.out.println("[INFO] 手动触发结束");
     // }
 
-    public static void main(String[] args) {
-        List<String> testList = new ArrayList<>();
-        testList.add("asdf");
-        testList.add("viejbrgv");
-        Optional.ofNullable(testList).orElse(Collections.emptyList()).forEach(System.out::println);
-        Optional.ofNullable(testList).orElse(Collections.emptyList()).forEach(log::info);
-        if (!testList.isEmpty()) {
-            testList.forEach(System.out::println);
-        }
-    }
-
     @GetMapping("mybatisOnce")
     public void testBatchInsertUser() throws IOException {
         try (SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH, false)) {
@@ -657,5 +650,31 @@ public class MySQLTest {
         }
     }
 
+
+    /**
+     * Test Files API test1
+     */
+    @GetMapping("TestFilesAPI_1")
+    public void TestFilesAPI_1() {
+        String dirName = "C:\\Users\\Alan\\Downloads";
+        // 深度优先 the maximum number of directory levels to visit，如1表示指定路径的第一个层级，不深入第一个层级的文件夹内容
+        try (Stream<Path> paths = Files.walk(Paths.get(dirName),2)) {
+            paths.filter(Files::isRegularFile)
+                    .forEach(System.out::println);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void main(String[] args) {
+        String dirName = "C:\\Users\\Alan\\Downloads";
+
+        try (Stream<Path> paths = Files.walk(Paths.get(dirName),1)) {
+            paths.filter(Files::isRegularFile)
+                    .forEach(System.out::println);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
