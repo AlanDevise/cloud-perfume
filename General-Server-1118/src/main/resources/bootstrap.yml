@@ -1,25 +1,25 @@
-#spring:
-#  application:
-#    # 服务注册时使用的名称[使用Nacos时，服务名称一定要和配置中心一样写在bootstrap，否则会被解析成null.properties或null.yaml]
-#    name: General-Server-Service
-#  cloud:
-#    nacos:
-#      # 服务发现地址
-#      server-addr: 127.0.0.1:8848
-#      # 配置中心地址
-#      config:
-#        server-addr: 127.0.0.1:8848
-#        namespace: b5c78034-8d70-409d-af6e-62fe1b798ef7
-#        extension-configs:
-#          # 服务特有配置
-#          - data-id: General-Server-Service-dev.yaml
-#            refresh: true
-#          # 数据源公共配置
-#          - data-id: datasource.yaml
-#            refresh: true
-#          # Redis公共配置
-#          - data-id: redis-config.yaml
-#            refresh: true
-#          # Mybatis-plus公共配置
-#          - data-id: mybatis-plus-config.yaml
-#            refresh: true
+spring:
+  application:
+    # 服务注册时使用的名称[使用Nacos时，服务名称一定要和配置中心一样写在bootstrap，否则会被解析成null.properties或null.yaml]
+    name: General-Server-Service
+  cloud:
+    nacos:
+      # 服务发现地址
+      server-addr: 127.0.0.1:8848
+      # 配置中心地址
+      config:
+        server-addr: 127.0.0.1:8848
+        namespace: b5c78034-8d70-409d-af6e-62fe1b798ef7
+        extension-configs:
+          # 服务特有配置
+          - data-id: General-Server-Service-dev.yaml
+            refresh: true
+          # 数据源公共配置
+          - data-id: datasource.yaml
+            refresh: true
+          # Redis公共配置
+          - data-id: redis-config.yaml
+            refresh: true
+          # Mybatis-plus公共配置
+          - data-id: mybatis-plus-config.yaml
+            refresh: true

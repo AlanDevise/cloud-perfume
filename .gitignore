@@ -9,3 +9,4 @@ target/
 *.iml
 #忽略所有.class文件
 *.class
+/User-Server-1120/target/
