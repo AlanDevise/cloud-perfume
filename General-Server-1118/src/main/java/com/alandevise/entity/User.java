@@ -24,12 +24,18 @@ import java.util.Date;
 @NoArgsConstructor
 @SensitiveData
 public class User {
+
     private Long id;
+
     private String name;
+
     private Integer balance;
+
     @Encrypted
     private String password;
+
     private Date createTime;
+
     private Date updateTime;
 }
 
