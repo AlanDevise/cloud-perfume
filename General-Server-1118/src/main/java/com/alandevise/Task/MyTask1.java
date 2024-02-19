@@ -25,7 +25,7 @@ public class MyTask1 extends QuartzJobBean {
     private UserService userService;
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        User student = new User(null,"Alan",1999,"asdfasdf",null,null);
+        User student = new User(null,"Alan","user@mail.com",1999,"asdfasdf",null,null);
         userService.create(student);
         //TODO 这里写定时任务的执行逻辑
         System.out.println("动态的定时任务执行时间："+ new Date());

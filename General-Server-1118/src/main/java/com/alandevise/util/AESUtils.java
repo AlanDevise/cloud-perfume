@@ -41,8 +41,8 @@ public class AESUtils {
     }
 
     public static void main(String[] args) throws Exception {
-        // String encryptString = encrypt("6aKenQrFc0YeyOJugPmIRz6rKmijRtpxEVhyYjsL20U=");
-        // System.out.println("加密后的密码为：" + encryptString);
+        String encryptString = encrypt("6aKenQrFc0YeyOJugPmIRz6rKmijRtpxEVhyYjsL20U=");
+        System.out.println("加密后的密码为：" + encryptString);
         String decryptString = decrypt("6aKenQrFc0YeyOJugPmIRz6rKmijRtpxEVhyYjsL20U=");
         System.out.println("解密后的密码为：" + decryptString);
     }

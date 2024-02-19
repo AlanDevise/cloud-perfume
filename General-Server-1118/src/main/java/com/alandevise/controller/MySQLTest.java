@@ -362,7 +362,7 @@ public class MySQLTest {
      * @date 2024/2/19 09:50
      */
     @RequestMapping("/batchCreate")
-    public String batchCreate(User user) {
+    public String batchCreate(User user) throws Exception {
         Boolean result = userService.batchCreate(user);
         if (result) {
             return "创建成功";

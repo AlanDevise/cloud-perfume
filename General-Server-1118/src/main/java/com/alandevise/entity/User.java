@@ -29,6 +29,9 @@ public class User {
 
     private String name;
 
+    @Encrypted
+    private String email;
+
     private Integer balance;
 
     @Encrypted

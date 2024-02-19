@@ -15,8 +15,8 @@
     </insert>
 
     <insert id="create" parameterType="com.alandevise.entity.User">
-        insert into user_test (name, balance, password)
-        values (#{user.name}, #{user.balance}, #{user.password})
+        insert into user_test (name, balance, password, email)
+        values (#{user.name}, #{user.balance}, #{user.password}, #{user.email})
     </insert>
 
     <insert id="insertSql">
@@ -37,12 +37,13 @@
         update user_test
         set balance = #{user.balance},
             name    = #{user.name},
-            password=#{user.password}
+            password= #{user.password},
+            email   = #{user.email}
         where id = #{user.id}
     </update>
 
     <select id="selectUser" resultType="com.alandevise.entity.User">
-        select id, `name`, balance, password, create_time, update_time
+        select id, `name`, balance, email,password, create_time, update_time
         from user_test
         where id = #{id}
     </select>
@@ -53,7 +54,7 @@
     </select>
 
     <select id="selectUserList" resultType="com.alandevise.entity.User">
-        select id, `name`, balance, password, create_time, update_time
+        select id, `name`, balance, email,password, create_time, update_time
         from user_test
         where name like concat('%',#{name},'%')
     </select>
