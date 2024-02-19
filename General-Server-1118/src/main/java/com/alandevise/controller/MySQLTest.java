@@ -336,6 +336,14 @@ public class MySQLTest {
         log.warn("耗时：" + stopWatch.getLastTaskTimeMillis() / 1000.0 + "秒");
     }
 
+    /**
+     * 创建单个用户
+     *
+     * @param user 用户实体类
+     * @return java.lang.String
+     * @author Alan Zhang [initiator@alandevise.com]
+     * @date 2024/2/19 09:51
+     */
     @RequestMapping("/create")
     public String create(User user) {
         Boolean result = userService.create(user);
@@ -345,6 +353,14 @@ public class MySQLTest {
         return "创建失败";
     }
 
+    /**
+     * 批量创建用户
+     *
+     * @param user 用户实体类
+     * @return java.lang.String
+     * @author Alan Zhang [initiator@alandevise.com]
+     * @date 2024/2/19 09:50
+     */
     @RequestMapping("/batchCreate")
     public String batchCreate(User user) {
         Boolean result = userService.batchCreate(user);
@@ -354,14 +370,47 @@ public class MySQLTest {
         return "创建失败";
     }
 
+    /**
+     * 通过ID查询用户
+     *
+     * @param id 用户ID
+     * @return com.alandevise.entity.User
+     * @author Alan Zhang [initiator@alandevise.com]
+     * @date 2024/2/19 09:49
+     */
     @RequestMapping("/query")
     public User query(Long id) {
         return userService.query(id);
     }
 
+    /**
+     * 通过名称批量查询用户接口
+     *
+     * @param name 用户名
+     * @return java.util.List<com.alandevise.entity.User>
+     * @author Alan Zhang [initiator@alandevise.com]
+     * @date 2024/2/19 09:47
+     */
     @RequestMapping("/queryByName")
     public List<User> queryByName(String name) {
         return userService.queryByName(name);
+    }
+
+    /**
+     * 根据用户ID更新用户
+     *
+     * @param user 用户对象实体类
+     * @return java.lang.String
+     * @author Alan Zhang [initiator@alandevise.com]
+     * @date 2024/2/19 09:53
+     */
+    @RequestMapping("/updateUser")
+    public String updateUser(User user) {
+        Boolean result = userService.updateUser(user);
+        if (result) {
+            return "更新成功";
+        }
+        return "更新失败";
     }
 
 
@@ -672,7 +721,7 @@ public class MySQLTest {
     public void TestFilesAPI_1() {
         String dirName = "C:\\Users\\Alan\\Downloads";
         // 深度优先 the maximum number of directory levels to visit，如1表示指定路径的第一个层级，不深入第一个层级的文件夹内容
-        try (Stream<Path> paths = Files.walk(Paths.get(dirName),2)) {
+        try (Stream<Path> paths = Files.walk(Paths.get(dirName), 2)) {
             paths.filter(Files::isRegularFile)
                     .forEach(System.out::println);
         } catch (IOException e) {
@@ -683,7 +732,7 @@ public class MySQLTest {
     public static void main(String[] args) {
         String dirName = "C:\\Users\\Alan\\Downloads";
 
-        try (Stream<Path> paths = Files.walk(Paths.get(dirName),1)) {
+        try (Stream<Path> paths = Files.walk(Paths.get(dirName), 1)) {
             paths.filter(Files::isRegularFile)
                     .forEach(System.out::println);
         } catch (IOException e) {

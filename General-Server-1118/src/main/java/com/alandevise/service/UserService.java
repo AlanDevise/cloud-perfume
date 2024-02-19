@@ -15,7 +15,12 @@ import java.util.List;
 
 public interface UserService {
     Boolean create(User user);
+
     Boolean batchCreate(User user);
+
+    Boolean updateUser(User user);
+
     User query(Long id);
+
     List<User> queryByName(String name);
 }

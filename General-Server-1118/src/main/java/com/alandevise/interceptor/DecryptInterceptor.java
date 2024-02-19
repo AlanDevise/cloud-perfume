@@ -20,7 +20,10 @@ import java.util.Objects;
  * @Filename: DecryptInterceptor.java
  * @Package: com.alandevise.interceptor
  * @Version: V1.0.0
- * @Description: 1. 解密拦截器
+ * @Description: 说明
+ * 1. 解密拦截器，针对从DB出查询出的结果集进行解密操作。
+ * 2. 拦截所有的handleResultSets方法，检查对象是否为包含@SensitiveData注解的类，随后进一步遍历类中所有包含@Encrypted的字段。
+ * 3. 对于包含@Encrypted注解的字段进行解密操作。
  * @Author: Alan Zhang [initiator@alandevise.com]
  * @Date: 2023年03月11日 12:30
  */
@@ -31,6 +34,14 @@ import java.util.Objects;
 @Slf4j
 @Component
 public class DecryptInterceptor implements Interceptor, HandlerInterceptor {
+    /**
+     * 解密拦截器具体逻辑
+     *
+     * @param invocation 代理对象
+     * @return java.lang.Object
+     * @author Alan Zhang [initiator@alandevise.com]
+     * @date 2024/2/19 10:32
+     */
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
         Object resultObject = invocation.proceed();
@@ -57,22 +68,48 @@ public class DecryptInterceptor implements Interceptor, HandlerInterceptor {
             }
             return resultObject;
         } catch (Exception e) {
-            log.error("解密失败", e);
+            log.error("淦，解密失败", e);
         }
         return resultObject;
     }
 
+    /**
+     * 是否需要解密判断方法
+     *
+     * @param object 数据对象
+     * @return result true：需要解密 false：不需要解密
+     * @author Alan Zhang [initiator@alandevise.com]
+     * @date 2024/2/19 10:33
+     */
     private boolean needToDecrypt(Object object) {
+        // 获取对象类型
         Class<?> objectClass = object.getClass();
+        // 判断是否为SensitiveData对象
         SensitiveData sensitiveData = AnnotationUtils.findAnnotation(objectClass, SensitiveData.class);
         return Objects.nonNull(sensitiveData);
     }
 
+    /**
+     * 切记配置，否则当前拦截器不会加入拦截器链
+     *
+     * @param o 对象
+     * @return java.lang.Object
+     * @author Alan Zhang [initiator@alandevise.com]
+     * @date 2024/2/19 10:34
+     */
     @Override
     public Object plugin(Object o) {
         return Plugin.wrap(o, this);
     }
 
+    /**
+     * 解密方法
+     *
+     * @param result 数据对象
+     * @return result 解密后的数据对象
+     * @author Alan Zhang [initiator@alandevise.com]
+     * @date 2024/2/19 10:35
+     */
     public <T> T decrypt(T result) throws Exception {
         // 取出resultType的类
         Class<?> resultClass = result.getClass();

@@ -61,4 +61,6 @@ public interface StudentMapper {
     void batchInsertUser(@Param("list") List<t_test_user> userList);
 
     void insertUser(t_test_user tTestUser);
+
+    int updateUser(@Param("user") User user);
 }

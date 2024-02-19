@@ -33,6 +33,14 @@
         values (${SQL.val})
     </insert>
 
+    <update id="updateUser">
+        update user_test
+        set balance = #{user.balance},
+            name    = #{user.name},
+            password=#{user.password}
+        where id = #{user.id}
+    </update>
+
     <select id="selectUser" resultType="com.alandevise.entity.User">
         select id, `name`, balance, password, create_time, update_time
         from user_test
