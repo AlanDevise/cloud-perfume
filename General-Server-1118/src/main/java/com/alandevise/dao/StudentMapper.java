@@ -25,7 +25,16 @@ public interface StudentMapper {
 
     int create(@Param("user") User user);
 
+    /**
+     * 批量插入用户
+     *
+     * @param userList 用户列表
+     */
+    int batchCreateUser(@Param("userList") List<User> userList);
+
     User selectUser(@Param("id") Long id);
+
+    List<User> selectUserList(@Param("name") String name);
 
     void insertSql(@Param("sql") String sql);
 

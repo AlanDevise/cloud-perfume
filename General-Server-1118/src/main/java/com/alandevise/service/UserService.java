@@ -2,6 +2,8 @@ package com.alandevise.service;
 
 import com.alandevise.entity.User;
 
+import java.util.List;
+
 /**
  * @Filename: UserService.java
  * @Package: com.alandevise.service
@@ -13,5 +15,7 @@ import com.alandevise.entity.User;
 
 public interface UserService {
     Boolean create(User user);
+    Boolean batchCreate(User user);
     User query(Long id);
+    List<User> queryByName(String name);
 }

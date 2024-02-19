@@ -5,13 +5,20 @@ import com.alandevise.annotation.SensitiveData;
 import com.alandevise.util.AESUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.*;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.lang.reflect.Field;
+import java.sql.ParameterMetaData;
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -25,7 +32,7 @@ import java.util.Objects;
 
 
 @Slf4j
-// @Component
+@Component
 @Intercepts({
         @Signature(type = ParameterHandler.class, method = "setParameters", args = {PreparedStatement.class}),
 })
@@ -43,6 +50,23 @@ public class EncryptInterceptor implements Interceptor, HandlerInterceptor {
             if (parameterObject != null) {
                 HashMap parameterObjectMap = (HashMap) parameterObject;
                 for (Object key : parameterObjectMap.keySet()) {
+                    Object object = parameterObjectMap.get(key);
+                    if (object instanceof ArrayList){
+                        ArrayList<?> objects = (ArrayList<?>) object;
+                        for (Object obj : objects) {
+                            Class<?> aClass = obj.getClass();
+                            // 校验该实例的类是否被@SensitiveData所注解
+                            SensitiveData sensitiveData = AnnotationUtils.findAnnotation(aClass, SensitiveData.class);
+                            if (Objects.nonNull(sensitiveData)) {
+                                // 取出当前当前类所有字段，传入加密方法
+                                Field[] declaredFields = aClass.getDeclaredFields();
+                                // Map<String, Object> objectToMap = getObjectToMap(obj);
+                                encrypt(declaredFields, obj);
+                                log.info("已经过加密");
+                            }
+                        }
+                        break;
+                    }
                     Class<?> parameterObjectClass = parameterObjectMap.get(key).getClass();
                     // 校验该实例的类是否被@SensitiveData所注解
                     SensitiveData sensitiveData = AnnotationUtils.findAnnotation(parameterObjectClass, SensitiveData.class);
@@ -86,5 +110,21 @@ public class EncryptInterceptor implements Interceptor, HandlerInterceptor {
             }
         }
         return paramsObject;
+    }
+
+    //Object转Map
+    public static Map<String, Object> getObjectToMap(Object obj) throws IllegalAccessException {
+        Map<String, Object> map = new HashMap<String, Object>();
+        Class<?> cla = obj.getClass();
+        Field[] fields = cla.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            String keyName = field.getName();
+            Object value = field.get(obj);
+            if (value == null)
+                value = "";
+            map.put(keyName, value);
+        }
+        return map;
     }
 }

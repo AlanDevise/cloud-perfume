@@ -337,8 +337,17 @@ public class MySQLTest {
     }
 
     @RequestMapping("/create")
-    public String create(User user) throws Exception {
+    public String create(User user) {
         Boolean result = userService.create(user);
+        if (result) {
+            return "创建成功";
+        }
+        return "创建失败";
+    }
+
+    @RequestMapping("/batchCreate")
+    public String batchCreate(User user) {
+        Boolean result = userService.batchCreate(user);
         if (result) {
             return "创建成功";
         }
@@ -348,6 +357,11 @@ public class MySQLTest {
     @RequestMapping("/query")
     public User query(Long id) {
         return userService.query(id);
+    }
+
+    @RequestMapping("/queryByName")
+    public List<User> queryByName(String name) {
+        return userService.queryByName(name);
     }
 
 

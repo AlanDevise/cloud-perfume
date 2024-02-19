@@ -44,6 +44,12 @@
         from t_fert_accrue;
     </select>
 
+    <select id="selectUserList" resultType="com.alandevise.entity.User">
+        select id, `name`, balance, password, create_time, update_time
+        from user_test
+        where name like concat('%',#{name},'%')
+    </select>
+
     <insert id="insertDirectly">
         ${sqlString}
     </insert>
@@ -107,6 +113,17 @@
         insert into t_user(username, age)
         values (#{username},
                 #{age})
+    </insert>
+
+    <insert id="batchCreateUser">
+        insert into user_test(name, balance, password) values
+        <foreach collection="userList" item="item" index="index" separator=",">
+            (
+            #{item.name},
+            #{item.balance},
+            #{item.password}
+            )
+        </foreach>
     </insert>
 
 </mapper>
