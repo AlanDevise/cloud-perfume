@@ -1,6 +1,7 @@
 package com.alandevise.controller;
 
 import cn.hutool.core.util.IdUtil;
+import com.alandevise.config.DatasourceContext;
 import com.alandevise.dao.StudentMapper;
 import com.alandevise.entity.*;
 import com.alandevise.service.UserService;
@@ -69,6 +70,8 @@ public class MySQLTest {
     @GetMapping("/getTest")
     @ApiOperation("MySQL基本操作测试-GET")
     public String FirstTest() {
+        DatasourceContext.DataType datasourceType = DatasourceContext.getDatasourceType();
+        log.warn(String.valueOf(datasourceType));
         return "运行到了Controller层";
     }
 
