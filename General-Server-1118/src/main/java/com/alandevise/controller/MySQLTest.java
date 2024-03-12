@@ -89,12 +89,12 @@ public class MySQLTest {
         return "接收到参数是：" + name + age;
     }
 
-    /*
-     * 一次性插入大量数据的基本方法，一条数据一条数据插入，极为浪费系统性能，速度效率极慢
-     * [极为不推荐此种方法进行大量数据写入操作]
-     * record: 5W - 179s
-     *         50W - 2468s
-     * */
+    /**
+     * 一次性插入大量数据的基本方法，一条数据一条数据插入，极为浪费系统性能，速度效率极慢<br/>
+     * [极为不推荐此种方法进行大量数据写入操作]<br/>
+     * record: 5W - 179s<br/>
+     * 50W - 2468s<br/>
+     */
     @GetMapping("/for")
     public void forSingle() {
         // 开始时间
@@ -108,12 +108,12 @@ public class MySQLTest {
         System.out.println("插入数据消耗时间：" + (endTime - startTime));
     }
 
-    /*
+    /**
      * 大量数据一次性插入的次优解，本质是将大量的插入语句合并成一句
      * 以减少重新获取数据库连接的次数，释放资源的次数，以及解析sql的次数，从而提高性能
-     * 但同样存在一条sql的长度过长超过MySQL的默认限制的问题，需要手动增大
+     * 但同样存在一条sql的长度过长超过MySQL的默认限制的问题，需要手动增大<br/>
      * [ERROR] com.mysql.jdbc.PacketTooBigException: Packet for query is too large (39666728 > 4194304).
-     * */
+     */
     @GetMapping("/sql")
     public void sql() {
         ArrayList<Student> arrayList = new ArrayList<>();
@@ -127,13 +127,15 @@ public class MySQLTest {
         System.out.println("插入数据消耗时间：" + (endTime - startTime) / 1000.0);
     }
 
-    /*
-     * 大量数据一次性插入MySQL的最优解 - 需要开启批处理 [Temporary]
-     * record: 5W - 1s
-     *         50W - 8.2s
-     *         100W - 35.2s
-     *         300W - 110.703s
-     * */
+    /**
+     * 大量数据一次性插入MySQL的最优解 - 需要开启批处理 [Temporary]<br/>
+     * record: 5W - 1s<br/>
+     * 50W - 8.2s<br/>
+     * 100W - 35.2s<br/>
+     * 300W - 110.703s<br/>
+     *
+     * @throws SQLException
+     */
     @GetMapping("/forSaveBatch")
     public void forSaveBatch() throws SQLException {
         // //  开启批量处理模式 BATCH 、关闭自动提交事务 false
@@ -289,9 +291,11 @@ public class MySQLTest {
         log.warn("总耗时： " + (endTime - startTime) / 1000.0 + "秒");
     }
 
-    /*
+    /**
      * MySQL流式查询
-     * */
+     *
+     * @throws SQLException
+     */
     @GetMapping("/forStreamSearch")
     public void forStreamSearch() throws SQLException {
 
