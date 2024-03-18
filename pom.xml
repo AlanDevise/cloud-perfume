@@ -20,6 +20,7 @@
         <module>Netty-Server</module>
         <module>Logger-Server-1120</module>
         <module>MultiSource-Server-1121</module>
+        <module>Websocket-Server-1122</module>
     </modules>
     <packaging>pom</packaging>
 
