@@ -32,7 +32,7 @@ public class WebSocket {
     /**
      * concurrent包的线程安全Set，用来存放每个客户端对应的MyWebSocket对象。若要实现服务端与单一客户端通信的话，可以使用Map来存放，其中Key可以为用户标识
      */
-    public static Map<String, List<Session>> electricSocketMap = new ConcurrentHashMap<>();
+    public static Map<String, List<Session>> userSocketMap = new ConcurrentHashMap<>();
 
     /**
      * 连接建立成功调用的方法
@@ -41,11 +41,11 @@ public class WebSocket {
      */
     @OnOpen
     public void onOpen(@PathParam("pageCode") String pageCode, Session session) {
-        List<Session> sessions = electricSocketMap.get(pageCode);
+        List<Session> sessions = userSocketMap.get(pageCode);
         if (null == sessions) {
             List<Session> sessionList = new ArrayList<>();
             sessionList.add(session);
-            electricSocketMap.put(pageCode, sessionList);
+            userSocketMap.put(pageCode, sessionList);
         } else {
             sessions.add(session);
         }
@@ -56,8 +56,8 @@ public class WebSocket {
      */
     @OnClose
     public void onClose(@PathParam("pageCode") String pageCode, Session session) {
-        if (electricSocketMap.containsKey(pageCode)) {
-            electricSocketMap.get(pageCode).remove(session);
+        if (userSocketMap.containsKey(pageCode)) {
+            userSocketMap.get(pageCode).remove(session);
         }
     }
 
@@ -71,13 +71,11 @@ public class WebSocket {
     public void onMessage(String message, Session session) {
         System.out.println("websocket received message:" + message);
         try {
-            // session.getBasicRemote().sendText("这是推送测试数据！您刚发送的消息是："+message);
-            for (List<Session> s : electricSocketMap.values()) {
-                for (int i = 0; i < s.size(); i++) {
-                    s.get(i).getBasicRemote().sendText("这是推送测试数据！您刚发送的消息是：" + message);
+            for (List<Session> sessionList : userSocketMap.values()) {
+                for (Session value : sessionList) {
+                    value.getBasicRemote().sendText("这是推送测试数据！您刚发送的消息是：" + message);
                 }
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
