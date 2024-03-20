@@ -1,5 +1,6 @@
 package com.alandevise.component;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -25,9 +26,8 @@ import java.util.concurrent.ConcurrentHashMap;
 //  @ServerEndpoint 注解是一个类层次的注解，它的功能主要是将目前的类定义成一个websocket服务器端,注解的值将被用于监听用户连接的终端访问URL地址,
 //  客户端可以通过这个URL来连接到WebSocket服务器端
 @Component
+@Slf4j
 public class WebSocket {
-
-    private static final String loggerName = WebSocket.class.getName();
 
     /**
      * concurrent包的线程安全Set，用来存放每个客户端对应的MyWebSocket对象。若要实现服务端与单一客户端通信的话，可以使用Map来存放，其中Key可以为用户标识
@@ -69,7 +69,7 @@ public class WebSocket {
      */
     @OnMessage
     public void onMessage(String message, Session session) {
-        System.out.println("websocket received message:" + message);
+        log.info("websocket received message:" + message);
         try {
             for (List<Session> sessionList : userSocketMap.values()) {
                 for (Session value : sessionList) {
@@ -89,6 +89,6 @@ public class WebSocket {
      */
     @OnError
     public void onError(Session session, Throwable error) {
-        System.out.println("发生错误");
+        log.error("发生错误");
     }
 }
