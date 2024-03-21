@@ -22,7 +22,7 @@ public class HeartBeatReqHandler extends ChannelHandlerAdapter {
 
     private volatile ScheduledFuture<?> heartBeat;
 
-    @Override
+    // @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         NettyMessage message = (NettyMessage) msg;
         // 握手成功，主动发送心跳消息

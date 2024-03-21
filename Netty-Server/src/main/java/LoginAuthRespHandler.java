@@ -24,7 +24,7 @@ public class LoginAuthRespHandler extends ChannelHandlerAdapter {
     private Map<String, Boolean> nodeCheck = new ConcurrentHashMap<String, Boolean>();
     private String[] whitekList = { "127.0.0.1", "192.168.56.1" };
 
-    @Override
+    // @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg)
             throws Exception {
         NettyMessage message = (NettyMessage) msg;

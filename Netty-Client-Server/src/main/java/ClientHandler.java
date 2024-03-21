@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ClientHandler  extends ChannelHandlerAdapter {
 
     // 连接成功监听
-    @Override
+    // @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         try {
 

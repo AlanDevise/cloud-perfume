@@ -70,8 +70,8 @@
         <oauth2.version>2.2.5.RELEASE</oauth2.version>
         <spring-cloud-starter-security.version>2.2.5.RELEASE</spring-cloud-starter-security.version>
         <spring-boot-starter-aop.version>2.6.4</spring-boot-starter-aop.version>
-        <!-- <netty-all.version>4.1.82.Final</netty-all.version> -->
-        <netty-all.version>5.0.0.Alpha1</netty-all.version>
+        <netty-all.version>4.1.82.Final</netty-all.version>
+        <!-- <netty-all.version>5.0.0.Alpha1</netty-all.version>-->
         <log4j-api.version>2.20.0</log4j-api.version>
         <log4j-core.version>2.20.0</log4j-core.version>
     </properties>
