@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.alandevise.dao.StudentMapper">
+<mapper namespace="com.alandevise.GeneralServer.dao.StudentMapper">
 
     <insert id="insert">
         insert into student (`name`, age, addr, addr_num)
@@ -14,7 +14,7 @@
         </foreach>
     </insert>
 
-    <insert id="create" parameterType="com.alandevise.entity.User">
+    <insert id="create" parameterType="com.alandevise.GeneralServer.entity.User">
         insert into user_test (name, balance, password, email)
         values (#{user.name}, #{user.balance}, #{user.password}, #{user.email})
     </insert>
@@ -42,21 +42,28 @@
         where id = #{user.id}
     </update>
 
-    <select id="selectUser" resultType="com.alandevise.entity.User">
-        select id, `name`, balance, email,password, create_time, update_time
+    <select id="selectUser" resultType="com.alandevise.GeneralServer.entity.User">
+        select id, `name`, balance, email, password, create_time, update_time
         from user_test
         where id = #{id}
     </select>
 
-    <select id="selectInfo" resultType="com.alandevise.entity.TFAccrue" resultSetType="FORWARD_ONLY" fetchSize="1">
+    <select id="selectInfo" resultType="com.alandevise.GeneralServer.entity.TFAccrue" resultSetType="FORWARD_ONLY"
+            fetchSize="1">
         select *
         from t_fert_accrue;
     </select>
 
-    <select id="selectUserList" resultType="com.alandevise.entity.User">
-        select id, `name`, balance, email,password, create_time, update_time
+    <select id="selectUserList" resultType="com.alandevise.GeneralServer.entity.User">
+        select id, `name`, balance, email, password, create_time, update_time
         from user_test
-        where name like concat('%',#{name},'%')
+        where name like concat('%', #{name}, '%')
+    </select>
+
+    <select id="testSearchFromPgsql" resultType="com.alandevise.GeneralServer.entity.PgUser">
+        select *
+        from t_user
+        where user_id = #{userId}
     </select>
 
     <insert id="insertDirectly">

@@ -56,4 +56,9 @@ server:
 #    map-underscore-to-camel-case: true
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 #  global-config:
+#spring:
+#  datasource:
+#    hikari:
+#      keepalive-time: 1000
+#      connection-test-query: SELECT 1
 #    enable-sql-runner: true
