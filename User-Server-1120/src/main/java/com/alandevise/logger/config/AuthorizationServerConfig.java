@@ -1,6 +1,5 @@
-package com.alandevise.config;
+package com.alandevise.logger.config;
 
-import com.alandevise.service.UserService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,7 +14,7 @@ import javax.annotation.Resource;
 
 /**
  * @Filename: AuthorizationServerConfig.java
- * @Package: com.alandevise.config
+ * @Package: com.alandevise.logger.config
  * @Version: V1.0.0
  * @Description: 1. 授权服务器配置
  * @Author: Alan Zhang [initiator@alandevise.com]

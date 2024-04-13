@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @Filename ExceptionDealTestController.java
- * @Package com.alandevise.controller
+ * @Package com.alandevise.logger.controller
  * @Version V1.0.0
  * @Description 1. 测试controller异常统一处理
  * @Author Alan Zhang [initiator@alandevise.com]

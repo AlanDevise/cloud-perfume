@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @Filename: DataSourceType.java
- * @Package: com.alandevise.config
+ * @Package: com.alandevise.logger.config
  * @Version: V1.0.0
  * @Description: 1. 生成一个Java Bean 以能够在程序任何位置感知连接的数据库类型
  * @Author: Alan Zhang [initiator@alandevise.com]

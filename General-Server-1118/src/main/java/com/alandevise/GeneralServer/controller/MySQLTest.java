@@ -35,7 +35,7 @@ import java.util.stream.Stream;
 
 /**
  * @Filename: MySQLTest.java
- * @Package: com.alandevise.controller
+ * @Package: com.alandevise.logger.controller
  * @Version: V1.0.0
  * @Description: 1.
  * @Author: Alan Zhang [initiator@alandevise.com]

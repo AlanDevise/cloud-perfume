@@ -1,4 +1,4 @@
-package com.alandevise.config;
+package com.alandevise.logger.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +9,7 @@ import org.springframework.security.oauth2.provider.token.store.redis.RedisToken
 
 /**
  * @Filename: RedisConfig.java
- * @Package: com.alandevise.config
+ * @Package: com.alandevise.logger.config
  * @Version: V1.0.0
  * @Description: 1.
  * @Author: Alan Zhang [initiator@alandevise.com]

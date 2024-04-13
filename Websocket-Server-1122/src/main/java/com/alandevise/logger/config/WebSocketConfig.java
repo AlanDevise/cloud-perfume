@@ -1,4 +1,4 @@
-package com.alandevise.config;
+package com.alandevise.logger.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

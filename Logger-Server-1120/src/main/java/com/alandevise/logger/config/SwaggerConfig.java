@@ -1,4 +1,4 @@
-package com.alandevise.config;
+package com.alandevise.logger.config;
 
 import io.swagger.annotations.Api;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 /**
  * @Filename: SwaggerConfig.java
- * @Package: com.alandevise.config
+ * @Package: com.alandevise.logger.config
  * @Version: V1.0.0
  * @Description: 1.
  * @Author: Alan Zhang [initiator@alandevise.com]

@@ -1,4 +1,4 @@
-package com.alandevise.controller;
+package com.alandevise.logger.controller;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.security.core.Authentication;
@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * @Filename: UserController.java
- * @Package: com.alandevise.controller
+ * @Package: com.alandevise.logger.controller
  * @Version: V1.0.0
  * @Description: 1.
  * @Author: Alan Zhang [initiator@alandevise.com]

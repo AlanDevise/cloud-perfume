@@ -1,4 +1,4 @@
-package com.alandevise.config;
+package com.alandevise.logger.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -7,7 +7,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 
 /**
  * @Filename: ResourceServerConfig.java
- * @Package: com.alandevise.config
+ * @Package: com.alandevise.logger.config
  * @Version: V1.0.0
  * @Description: 1. 资源服务器配置
  * @Author: Alan Zhang [initiator@alandevise.com]

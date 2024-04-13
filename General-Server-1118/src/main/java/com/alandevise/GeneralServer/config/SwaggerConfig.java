@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 /**
  * @Filename: SwaggerConfig.java
- * @Package: com.alandevise.config
+ * @Package: com.alandevise.logger.config
  * @Version: V1.0.0
  * @Description: 1. Swagger配置类
  * @Author: Alan Zhang [initiator@alandevise.com]

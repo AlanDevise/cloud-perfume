@@ -12,7 +12,7 @@ import javax.annotation.PostConstruct;
 
 /**
  * @Filename: NacosServiceInstanceChangeNotifier.java
- * @Package: com.alandevise.config
+ * @Package: com.alandevise.logger.config
  * @Version: V1.0.0
  * @Description: 1.
  * @Author: Alan Zhang [initiator@alandevise.com]

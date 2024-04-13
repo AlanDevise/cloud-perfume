@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @Filename: ConfigController.java
- * @Package: com.alandevise.controller
+ * @Package: com.alandevise.logger.controller
  * @Version: V1.0.0
  * @Description: 1. Nacos配置中心动态获取值测试
  * @Author: Alan Zhang [initiator@alandevise.com]

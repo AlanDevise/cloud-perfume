@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 
 /**
  * @Filename: QuartzConfig.java
- * @Package: com.alandevise.config
+ * @Package: com.alandevise.logger.config
  * @Version: V1.0.0
  * @Description: 1. 定时器任务配置类
  * @Author: Alan Zhang [initiator@alandevise.com]

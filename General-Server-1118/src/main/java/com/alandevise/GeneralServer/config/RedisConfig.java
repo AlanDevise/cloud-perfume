@@ -17,7 +17,7 @@ import redis.clients.jedis.JedisPoolConfig;
 
 /**
  * @Filename: RedisConfig.java
- * @Package: com.alandevise.config
+ * @Package: com.alandevise.logger.config
  * @Version: V1.0.0
  * @Description: 1. Redis配置类
  * @Author: Alan Zhang [initiator@alandevise.com]

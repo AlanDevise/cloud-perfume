@@ -1,4 +1,4 @@
-package com.alandevise.controller;
+package com.alandevise.logger.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @Filename: TestController.java
- * @Package: com.alandevise.controller
+ * @Package: com.alandevise.logger.controller
  * @Version: V1.0.0
  * @Description: 1.
  * @Author: Alan Zhang [initiator@alandevise.com]

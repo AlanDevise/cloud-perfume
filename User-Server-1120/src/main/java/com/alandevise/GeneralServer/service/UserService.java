@@ -1,4 +1,4 @@
-package com.alandevise.service;
+package com.alandevise.GeneralServer.service;
 
 import com.alandevise.dao.UserMapper;
 import com.alandevise.entity.User;
