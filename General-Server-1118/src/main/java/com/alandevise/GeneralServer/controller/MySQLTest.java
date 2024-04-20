@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Stack;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -746,13 +745,26 @@ public class MySQLTest {
         return userService.testSearchFromPgsql(id);
     }
 
-    public static void main(String[] args) {
-        ThreadLocal<String> local = new ThreadLocal<>();
+    /**
+     * <p>范型作为参数的测试方法
+     * data可能为任意类型的值，TestFunction方法内部需要对参数的类型做判断，以实现不同的逻辑
+     * 如对参数的类型判断为String或其他类型等</p>
+     * 第一个T表示这是一个范型，第二个T才是范型的真正的实现
+     *
+     * @param data 范型数据
+     */
+    public static <T> void TestFunction(T data) {
+        if (data instanceof String) {
+            log.info("接收到的数据：{}", data);
+        } else {
+            log.info("非String类型，无法作为日志输出");
+        }
+    }
 
-        IntStream.range(0, 10).forEach(i -> new Thread(() -> {
-            local.set(Thread.currentThread().getName() + ":" + i);
-            System.out.println("线程：" + Thread.currentThread().getName() + ",local:" + local.get());
-        }).start());
+    public static void main(String[] args) {
+        String data = "nihao";
+        Integer data2 = 123;
+        TestFunction(data2);
     }
 
 }

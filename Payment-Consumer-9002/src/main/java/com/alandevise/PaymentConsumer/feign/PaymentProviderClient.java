@@ -2,6 +2,7 @@ package com.alandevise.PaymentConsumer.feign;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @Filename: PaymentProviderClient.java
@@ -14,6 +15,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @FeignClient(value = "Payment-Provider")
 public interface PaymentProviderClient {
+    // 可用版本1
+    // @GetMapping("/test")
+    // String test(@SpringQueryMap TestEntity testEntity);
+
+    // 可用版本2
     @GetMapping("/test")
-    String test();
+    String test(@RequestParam("name") String name,
+                @RequestParam("id") String id);
 }

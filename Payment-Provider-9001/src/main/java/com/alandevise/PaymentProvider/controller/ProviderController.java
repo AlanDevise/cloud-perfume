@@ -1,8 +1,11 @@
 package com.alandevise.PaymentProvider.controller;
 
+import com.alandevise.PaymentProvider.TestEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Filename: ProviderController.java
@@ -18,8 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProviderController {
 
     @GetMapping("/test")
-    String test() {
+    String test(HttpServletRequest request,
+                TestEntity testEntity) {
         log.info("[INFO] Received the request from client.");
-        return "This message is from provider 9001!";
+        return "This message is from provider 9001!" +
+                "id is" + testEntity.getId();
     }
 }
