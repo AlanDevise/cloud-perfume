@@ -19,7 +19,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients
-@EnableScheduling
+//@EnableScheduling
 // @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 @MapperScan("com.alandevise.GeneralServer.dao")
 public class GeneralServerApp {

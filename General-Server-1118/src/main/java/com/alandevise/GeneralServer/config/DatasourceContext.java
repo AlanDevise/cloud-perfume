@@ -1,7 +1,10 @@
 package com.alandevise.GeneralServer.config;
 
+import com.alandevise.GeneralServer.Task.DbMasterConnTest;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Component;
  * @Date: 2024年03月02日 00:17
  */
 @Component
+@Slf4j
 public class DatasourceContext implements InitializingBean, EnvironmentAware {
 
     private String driverClassName;
@@ -22,8 +26,9 @@ public class DatasourceContext implements InitializingBean, EnvironmentAware {
     static DataType dataType;
 
     @Override
-    public void afterPropertiesSet() throws Exception {
-        if (StringUtils.isNotBlank(String.valueOf(driverClassName)) && driverClassName.contains("mysql")) {
+    public void afterPropertiesSet() {
+        if (StringUtils.isNotBlank(String.valueOf(driverClassName))
+                && driverClassName.contains("mysql")) {
             dataType = DataType.MYSQL;
         } else {
             dataType = DataType.UNKNOWN;

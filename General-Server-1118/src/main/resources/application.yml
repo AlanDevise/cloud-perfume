@@ -1,5 +1,10 @@
 server:
   port: 1118
+alancfg:
+  # 定时任务执行的周日cron表达式，这里5秒执行一次
+  interval: '0/5 * * * * ?'
+  # 是否加载定时任务类
+  open: true
 #spring:
 #  datasource:
 #    # 当前数据源操作类型
