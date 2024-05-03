@@ -1,5 +1,6 @@
 package com.alandevise.GeneralServer.Task;
 
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -12,7 +13,9 @@ import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 @Component
 @ConditionalOnProperty(value = "alancfg.open") // 根据配置文件得true/false来判断是否生成此定时任务得类
@@ -33,13 +36,18 @@ public class DbMasterConnTest implements SchedulingConfigurer {
      * 数据源
      */
     @Resource
-    DataSource dataSource;
+    HikariDataSource dataSource;
+
+    /**
+     * 数据库连接
+     */
+    Connection connection;
 
     /**
      * 重写的配置任务
+     *
      * @param scheduledTaskRegistrar 定时任务注册
      */
-    @SneakyThrows
     @Override
     public void configureTasks(ScheduledTaskRegistrar scheduledTaskRegistrar) {
         try {
@@ -57,8 +65,27 @@ public class DbMasterConnTest implements SchedulingConfigurer {
 
     /**
      * 定时任务逻辑
+     *
+     * @return
      */
     private void process() {
+        try {
+            connection = dataSource.getConnection();
+            log.info("The database connection is {}", connection);
+            Statement statement = connection.createStatement();
+            statement.execute("select 1");
+        } catch (SQLException e) {
+            log.error("执行时出现以下异常：{}", e.getMessage());
+            dataSource.evictConnection(connection);
+        }finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    log.error("关闭连接时出现以下异常：{}",e.getMessage());
+                }
+            }
+        }
         System.out.println("基于接口定时任务");
     }
 }
