@@ -1,7 +1,6 @@
 package com.alandevise.GeneralServer.Task;
 
 import com.zaxxer.hikari.HikariDataSource;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -86,6 +85,6 @@ public class DbMasterConnTest implements SchedulingConfigurer {
                 }
             }
         }
-        System.out.println("基于接口定时任务");
+        log.info("基于接口定时任务");
     }
 }
