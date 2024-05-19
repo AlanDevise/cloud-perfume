@@ -7,6 +7,7 @@ import com.alandevise.GeneralServer.entity.*;
 import com.alandevise.GeneralServer.service.UserService;
 import com.alandevise.GeneralServer.util.IGlobalCache;
 import com.alandevise.GeneralServer.util.QuartzUtils;
+import com.alibaba.fastjson2.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -26,10 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Stack;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -762,9 +760,31 @@ public class MySQLTest {
     }
 
     public static void main(String[] args) {
-        String data = "nihao";
-        Integer data2 = 123;
-        TestFunction(data2);
+
+        List<fakeUser> fakeUserList = new ArrayList<>();
+        List<tUser> userList = new ArrayList<>();
+        for (int i = 1; i <= 50; i++) {
+            tUser user = new tUser();
+            user.setUserId(String.valueOf(i));
+            userList.add(user);
+        }
+        System.out.println(userList);
+        String oldObj = JSON.toJSONString(userList);
+        List<fakeUser> fakeUserList1 = JSON.parseArray(oldObj, fakeUser.class);
+        System.out.println(fakeUserList1);
     }
+
+    /**
+     * 从List<A> copy到List<B>
+     *
+     * @param list  List<B>
+     * @param clazz B
+     * @return List<B>
+     */
+    private static <T> List<T> copy(List<?> list, Class<T> clazz) {
+        String oldOb = JSON.toJSONString(list);
+        return JSON.parseArray(oldOb, clazz);
+    }
+
 
 }
