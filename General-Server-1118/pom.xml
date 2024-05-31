@@ -194,6 +194,14 @@
             <artifactId>HikariCP</artifactId>
         </dependency>
 
+        <!--二维码的生成和解析-->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.4.1</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>

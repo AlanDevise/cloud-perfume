@@ -8,6 +8,10 @@ import com.alandevise.GeneralServer.service.UserService;
 import com.alandevise.GeneralServer.util.IGlobalCache;
 import com.alandevise.GeneralServer.util.QuartzUtils;
 import com.alibaba.fastjson2.JSON;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.common.BitMatrix;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -22,11 +26,16 @@ import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
+import java.util.List;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -761,17 +770,13 @@ public class MySQLTest {
 
     public static void main(String[] args) {
 
-        List<fakeUser> fakeUserList = new ArrayList<>();
-        List<tUser> userList = new ArrayList<>();
-        for (int i = 1; i <= 50; i++) {
-            tUser user = new tUser();
-            user.setUserId(String.valueOf(i));
-            userList.add(user);
-        }
-        System.out.println(userList);
-        String oldObj = JSON.toJSONString(userList);
-        List<fakeUser> fakeUserList1 = JSON.parseArray(oldObj, fakeUser.class);
-        System.out.println(fakeUserList1);
+        // QRCodeGeneratorService qrCodeGenerator = new QRCodeGeneratorService();
+        String data = "https://todoitbo.fun"; // 要存储在QR码中的数据
+        int width = 300; // QR码的宽度
+        int height = 300; // QR码的高度
+        String filePath = "qrcode.png"; // 生成的QR码文件的路径
+
+        generateQRCode(data, width, height, filePath);
     }
 
     /**
@@ -784,6 +789,35 @@ public class MySQLTest {
     private static <T> List<T> copy(List<?> list, Class<T> clazz) {
         String oldOb = JSON.toJSONString(list);
         return JSON.parseArray(oldOb, clazz);
+    }
+
+    // 生成QR码的方法
+    public static void generateQRCode(String data, int width, int height, String filePath) {
+        try {
+            Map<EncodeHintType, Object> hints = new HashMap<>();
+            hints.put(EncodeHintType.CHARACTER_SET, "UTF-8"); // 设置字符编码
+            hints.put(EncodeHintType.ERROR_CORRECTION, com.google.zxing.qrcode.decoder.ErrorCorrectionLevel.H); // 错误纠正级别
+            hints.put(EncodeHintType.MARGIN, 1); // 二维码边距
+
+            MultiFormatWriter writer = new MultiFormatWriter();
+            BitMatrix bitMatrix = writer.encode(data, BarcodeFormat.QR_CODE, width, height, hints);
+
+            // 创建BufferedImage对象来表示QR码
+            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    image.setRGB(x, y, bitMatrix.get(x, y) ? Color.BLACK.getRGB() : Color.WHITE.getRGB());
+                }
+            }
+
+            // 将QR码保存到文件
+            File qrCodeFile = new File(filePath);
+            ImageIO.write(image, "png", qrCodeFile);
+
+            System.out.println("QR码已生成并保存到: " + filePath);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
