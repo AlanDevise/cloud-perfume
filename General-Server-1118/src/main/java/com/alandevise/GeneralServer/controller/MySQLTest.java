@@ -1,6 +1,7 @@
 package com.alandevise.GeneralServer.controller;
 
 import cn.hutool.core.util.IdUtil;
+import com.alandevise.GeneralServer.SPI.IShout;
 import com.alandevise.GeneralServer.config.DatasourceContext;
 import com.alandevise.GeneralServer.dao.StudentMapper;
 import com.alandevise.GeneralServer.entity.*;
@@ -777,6 +778,11 @@ public class MySQLTest {
         String filePath = "qrcode.png"; // 生成的QR码文件的路径
 
         generateQRCode(data, width, height, filePath);
+
+        ServiceLoader<IShout> shouts = ServiceLoader.load(IShout.class);
+        for (IShout s : shouts) {
+            s.shout();
+        }
     }
 
     /**
