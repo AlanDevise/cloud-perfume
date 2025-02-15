@@ -4,7 +4,11 @@ import com.alandevise.GeneralServer.dao.StudentMapper;
 import com.alandevise.GeneralServer.entity.PgUser;
 import com.alandevise.GeneralServer.entity.User;
 import com.alandevise.GeneralServer.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -21,6 +25,7 @@ import java.util.Stack;
  */
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     // 创建一个堆栈来存储父节点，符合FILO
@@ -75,8 +80,16 @@ public class UserServiceImpl implements UserService {
      * @date 2024/2/19 09:55
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean updateUser(User user) {
         int update = studentMapper.updateUser(user);
+        TransactionSynchronizationManager.registerSynchronization(
+                new TransactionSynchronizationAdapter() {
+                    @Override
+                    public void afterCommit() {
+                        log.info("事务提交之后的操作");
+                    }
+                });
         return update > 0;
     }
 

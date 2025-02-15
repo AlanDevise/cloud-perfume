@@ -37,7 +37,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
 import java.util.List;
+import java.util.Queue;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 /**
@@ -783,6 +785,66 @@ public class MySQLTest {
         for (IShout s : shouts) {
             s.shout();
         }
+
+        List<Object> widgeList = Collections.synchronizedList(new ArrayList<>());
+        widgeList.add("asdfasdf");
+        for (Object o : widgeList) {
+            System.out.println(o);
+        }
+        new Thread(MySQLTest::addTenThings);
+        Queue<String> queue = new LinkedList<>();
+
+        ConcurrentHashMap<String, String> map = new ConcurrentHashMap<>();
+        map.put("key1", "value1");
+        log.info(String.valueOf(map));
+
+        HashMap<String, String> normalHashMap = new HashMap<>();
+
+        System.out.println("array size:" + array.length);
+        for (String str : array) {
+            new Thread(new countTask(str)).start();
+        }
+
+        for (Map.Entry<String, Integer> entry : countMap.entrySet()) {
+            System.out.println(entry.getKey() + ":" + entry.getValue());
+        }
+
+    }
+
+    static class countTask implements Runnable {
+        String key;
+
+        public countTask(String key) {
+            this.key = key;
+        }
+
+        @Override
+        public void run() {
+            countMap.putIfAbsent(key, value);
+            countMap.merge(key, 1, Integer::sum);
+        }
+
+    }
+
+    private static ConcurrentHashMap<String, Integer> countMap = new ConcurrentHashMap<String, Integer>();
+    private static String[] array = {"yy", "yy", "welcome", "java", "234", "java", "1234", "yy", "welcome", "java", "234"};
+
+    public static final Set<Integer> set = new HashSet<>();
+
+    public static void addTenThings() {
+        Random random = new Random();
+        for (int i = 0; i < 10; i++) {
+            add(random.nextInt());
+        }
+        System.out.println("DEBUG: added ten elements to " + set);
+    }
+
+    public static synchronized void add(Integer i) {
+        set.add(i);
+    }
+
+    public synchronized void remove(Integer i) {
+        set.remove(i);
     }
 
     /**
