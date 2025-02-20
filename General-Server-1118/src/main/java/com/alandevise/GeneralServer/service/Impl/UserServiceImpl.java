@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean create(User user) {
         int insert = studentMapper.create(user);
-        return insert > 0;
+        return (Boolean) (insert > 0);
     }
 
     /**
@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
                     .build();
             newUserList.add(newUser);
         }
-        return studentMapper.batchCreateUser(newUserList) > 0;
+        return (Boolean) (studentMapper.batchCreateUser(newUserList) > 0);
     }
 
     /**
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
                         log.info("事务提交之后的操作");
                     }
                 });
-        return update > 0;
+        return (Boolean) (update > 0);
     }
 
     /**
