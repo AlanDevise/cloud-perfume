@@ -40,7 +40,8 @@ public class WebSocket {
      * @param session 可选的参数。session为与某个客户端的连接会话，需要通过它来给客户端发送数据
      */
     @OnOpen
-    public void onOpen(@PathParam("pageCode") String pageCode, Session session) {
+    public void onOpen(@PathParam("pageCode") String pageCode,
+                       Session session) {
         List<Session> sessions = userSocketMap.get(pageCode);
         if (null == sessions) {
             List<Session> sessionList = new ArrayList<>();
@@ -55,7 +56,8 @@ public class WebSocket {
      * 连接关闭调用的方法
      */
     @OnClose
-    public void onClose(@PathParam("pageCode") String pageCode, Session session) {
+    public void onClose(@PathParam("pageCode") String pageCode,
+                        Session session) {
         if (userSocketMap.containsKey(pageCode)) {
             userSocketMap.get(pageCode).remove(session);
         }
@@ -68,9 +70,13 @@ public class WebSocket {
      * @param session 可选的参数
      */
     @OnMessage
-    public void onMessage(String message, Session session) {
+    public void onMessage(String message,
+                          Session session) {
         log.info("websocket received message:" + message);
+        // 给当前的会话对象发送消息，这里只是回传
+        session.getAsyncRemote().sendText(message);
         try {
+            // 这里相当于实现的是一个广播的动作
             for (List<Session> sessionList : userSocketMap.values()) {
                 for (Session value : sessionList) {
                     value.getBasicRemote().sendText("这是推送测试数据！您刚发送的消息是：" + message);
