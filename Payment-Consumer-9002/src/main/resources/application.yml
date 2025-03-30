@@ -8,6 +8,10 @@ spring:
       discovery:
         server-addr: 127.0.0.1:8848
         enabled: true
+      # 配置中心地址
+      config:
+        server-addr: 127.0.0.1:8848
+        namespace: b5c78034-8d70-409d-af6e-62fe1b798ef7
   datasource:
     # 当前数据源操作类型
     type: com.alibaba.druid.pool.DruidDataSource
@@ -25,8 +29,8 @@ spring:
   redis:
     database: 0
     host: 127.0.0.1
-    port: 55000
-    password: redispw # 如果未单独配置默认为空即可
+    port: 6379
+    password:  # 如果未单独配置默认为空即可
     timeout: 1000
     jedis:
       pool:
@@ -38,6 +42,8 @@ spring:
     pathmatch:
       # 解决Swagger3找不到路径
       matching-strategy: ant_path_matcher
+  main:
+    allow-circular-references: true
 
 logging:
   level:
@@ -49,3 +55,25 @@ management:
     web:
       exposure:
         include: "*"
+
+dubbo:
+  cloud:
+    subscribed-services: Payment-Provider
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: nacos://127.0.0.1:8848?username=nacos&password=nacos
+    check: false
+  consumer:
+    check: false
+    actives: 20
+  provider:
+    loadbalance: leastactive
+    dispatcher: message
+    threadpool: cached
+    timeout: 60000
+    delay: 1
+  application:
+    name: Payment-Consumer
+    qos-port: 9012

@@ -1,14 +1,30 @@
 server:
+  # 服务端口号
   port: 9001
 
 spring:
   application:
+    # 服务注册时使用的名称[使用Nacos时，服务名称一定要和配置中心一样写在bootstrap，否则会被解析成null.properties或null.yaml]
     name: Payment-Provider
   cloud:
     nacos:
-      discovery:
+      # 服务发现地址
+      server-addr: 127.0.0.1:8848
+      # 配置中心地址
+      config:
         server-addr: 127.0.0.1:8848
-        enabled: true
+        namespace: b5c78034-8d70-409d-af6e-62fe1b798ef7
+        extension-configs:
+          # 服务特有配置
+          # 数据源公共配置
+          - data-id: datasource.yaml
+            refresh: true
+          # Redis公共配置
+          - data-id: redis-config.yaml
+            refresh: true
+          # Mybatis-plus公共配置
+          - data-id: mybatis-plus-config.yaml
+            refresh: true
 
 logging:
   level:
@@ -20,3 +36,23 @@ management:
     web:
       exposure:
         include: "*"
+
+# dubbo配置
+dubbo:
+  scan:
+    base-packages: com.alandevise.PaymentProvider.service
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: nacos://127.0.0.1:8848
+    username: nacos
+    password: nacos
+  provider:
+    loadbalance: leastactive
+    dispatcher: message
+    threadpool: cached
+    timeout: 60000
+    delay: -1
+  application:
+    dump-directory: ./tmp

@@ -1,10 +1,12 @@
 package com.alandevise.PaymentProvider.controller;
 
-import com.alandevise.PaymentProvider.TestEntity;
+import com.alandevise.PaymentProvider.entity.TestEntity;
+import com.alandevise.api.pay.PaymentReqTest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -20,6 +22,9 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public class ProviderController {
 
+    @Resource
+    private PaymentReqTest paymentProviderService;
+
     @GetMapping("/test")
     String test(HttpServletRequest request,
                 TestEntity testEntity) {
@@ -27,4 +32,11 @@ public class ProviderController {
         return "This message is from provider 9001!" +
                 "id is" + testEntity.getId();
     }
+
+    @GetMapping("/dubboReqTest")
+    String dubboReqTest(HttpServletRequest request,
+                        TestEntity testEntity) {
+        return paymentProviderService.func();
+    }
+
 }

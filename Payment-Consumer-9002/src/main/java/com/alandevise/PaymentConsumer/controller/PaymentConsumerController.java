@@ -2,7 +2,9 @@ package com.alandevise.PaymentConsumer.controller;
 
 import com.alandevise.PaymentConsumer.entity.TestEntity;
 import com.alandevise.PaymentConsumer.feign.PaymentProviderClient;
+import com.alandevise.api.pay.PaymentReqTest;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +28,9 @@ public class PaymentConsumerController {
     @Resource
     private PaymentProviderClient paymentProviderClient;
 
+    @DubboReference
+    private PaymentReqTest paymentProviderService;
+
     @GetMapping("/consumerTest")
     String test() {
         TestEntity testEntity = TestEntity.builder()
@@ -33,5 +38,10 @@ public class PaymentConsumerController {
                 .name("Alan")
                 .build();
         return paymentProviderClient.test(testEntity.getName(), testEntity.getId());
+    }
+
+    @GetMapping("/dubboTest")
+    String dubboTest() {
+        return paymentProviderService.func();
     }
 }
