@@ -4,6 +4,7 @@ import com.alandevise.PaymentConsumer.entity.TestEntity;
 import com.alandevise.PaymentConsumer.feign.PaymentProviderClient;
 import com.alandevise.api.pay.PaymentReqTest;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.time.StopWatch;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,6 +43,11 @@ public class PaymentConsumerController {
 
     @GetMapping("/dubboTest")
     String dubboTest() {
-        return paymentProviderService.func();
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        String func = paymentProviderService.func();
+        stopWatch.stop();
+        log.info("{}ms", stopWatch.getTime());
+        return func;
     }
 }
