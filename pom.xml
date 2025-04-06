@@ -22,6 +22,7 @@
         <module>MultiSource-Server-1121</module>
         <module>Websocket-Server-1122</module>
         <module>Common-Module</module>
+        <module>LangChain4J-1122</module>
     </modules>
     <packaging>pom</packaging>
 
