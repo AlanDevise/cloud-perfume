@@ -24,6 +24,7 @@
         <module>Common-Module</module>
         <module>LangChain4J-1122</module>
         <module>Mediamtx-Server-1123</module>
+        <module>MultiTSDB-Server-1124</module>
     </modules>
     <packaging>pom</packaging>
 

@@ -9,3 +9,26 @@ target/
 *.iml
 #忽略所有.class文件
 *.class
+#忽略MultiTSDB模块临时生成的类路径文件
+MultiTSDB-Server-1124/cp.txt
+#通用工程文件
+HELP.md
+.DS_Store
+.vscode/
+#忽略STS / Eclipse相关文件
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+#忽略NetBeans相关文件
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
