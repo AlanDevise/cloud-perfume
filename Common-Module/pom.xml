@@ -16,6 +16,7 @@
 
     <modules>
         <module>cloud-perfume-api</module>
+        <module>cloud-perfume-multitsdb-spring-boot-starter</module>
     </modules>
 
     <build>

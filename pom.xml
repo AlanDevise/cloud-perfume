@@ -29,6 +29,7 @@
     <packaging>pom</packaging>
 
     <properties>
+        <multitsdb.starter.version>1.0.2</multitsdb.starter.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
 

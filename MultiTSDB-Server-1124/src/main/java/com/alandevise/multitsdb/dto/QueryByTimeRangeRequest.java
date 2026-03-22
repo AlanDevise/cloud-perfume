@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class QueryByTimeRangeRequest {
-    private String tsdbType;
     private String database;
     private String measurement;
     private Long startTime;

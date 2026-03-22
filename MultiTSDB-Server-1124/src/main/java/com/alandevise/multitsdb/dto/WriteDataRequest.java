@@ -7,7 +7,6 @@ import java.util.Map;
 
 @Data
 public class WriteDataRequest {
-    private String tsdbType;
     private String database;
     private List<TimeSeriesDataDTO> dataList;
     
