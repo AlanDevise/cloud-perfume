@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSE / WebSocket Telemetry Demo</title>
+    <style>
+        :root {
+            --bg: #eef3f8;
+            --panel: rgba(255, 255, 255, 0.88);
+            --text: #1f2937;
+            --muted: #5f6b7a;
+            --line: rgba(27, 56, 93, 0.12);
+            --accent: #0f766e;
+            --accent-2: #2563eb;
+            --danger: #dc2626;
+            --shadow: 0 20px 60px rgba(15, 23, 42, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            color: var(--text);
+            background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.18), transparent 28%),
+            radial-gradient(circle at top right, rgba(15, 118, 110, 0.2), transparent 22%),
+            linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
+            min-height: 100vh;
+        }
+
+        .page {
+            width: min(1200px, calc(100% - 32px));
+            margin: 24px auto 40px;
+        }
+
+        .hero,
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(12px);
+        }
+
+        .hero {
+            padding: 28px;
+            margin-bottom: 20px;
+        }
+
+        h1,
+        h2,
+        h3,
+        p {
+            margin: 0;
+        }
+
+        .hero p {
+            margin-top: 10px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .controls {
+            margin-top: 18px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .chart-controls {
+            margin-top: 14px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .chart-controls label,
+        .controls label {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        input[type="number"] {
+            width: 140px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            font-size: 15px;
+        }
+
+        select {
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            font-size: 15px;
+            background: #fff;
+            color: var(--text);
+        }
+
+        button {
+            border: 0;
+            border-radius: 14px;
+            padding: 12px 16px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+            transition: transform .18s ease, opacity .18s ease;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            opacity: 0.92;
+        }
+
+        .sse-btn {
+            background: var(--accent);
+        }
+
+        .ws-btn {
+            background: var(--accent-2);
+        }
+
+        .stop-btn {
+            background: var(--danger);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            padding: 22px;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .metric {
+            padding: 14px;
+            border-radius: 16px;
+            background: rgba(248, 250, 252, 0.95);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+        }
+
+        .metric .label {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .metric .value {
+            margin-top: 8px;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .status {
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .stream {
+            margin-top: 18px;
+            max-height: 420px;
+            overflow: auto;
+            border-radius: 18px;
+            border: 1px solid var(--line);
+            background: rgba(15, 23, 42, 0.96);
+            color: #d9e5f4;
+            padding: 14px;
+            font-family: "SFMono-Regular", Consolas, monospace;
+            font-size: 12px;
+            line-height: 1.55;
+        }
+
+        .chart-panel {
+            margin-top: 18px;
+            padding: 16px;
+            border-radius: 18px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.86);
+        }
+
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .chart-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .axis-cap {
+            color: var(--muted);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+        }
+
+        .legend-dot.server {
+            background: var(--accent-2);
+        }
+
+        .legend-dot.browser {
+            background: #f59e0b;
+        }
+
+        .chart-canvas {
+            width: 100%;
+            height: 220px;
+            display: block;
+            border-radius: 14px;
+            background: linear-gradient(180deg, rgba(239, 246, 255, 0.9), rgba(248, 250, 252, 0.95));
+        }
+
+        .tips {
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    <section class="hero">
+        <h1>SSE / WebSocket 测点推送示例</h1>
+        <p>页面可手动指定每次推送的测点数量 N。服务端每秒生成一组随机整数测点，分别通过 SSE 和 WebSocket
+            推送到当前页面；同时展示服务端与浏览器的 CPU / 内存情况。</p>
+        <div class="controls">
+            <label for="pointCount">测点数量 N：</label>
+            <input id="pointCount" type="number" min="1" value="5">
+            <button class="sse-btn" id="startSseBtn">启动 SSE</button>
+            <button class="stop-btn" id="stopSseBtn">停止 SSE</button>
+            <button class="ws-btn" id="startWsBtn">启动 WebSocket</button>
+            <button class="stop-btn" id="stopWsBtn">停止 WebSocket</button>
+        </div>
+        <div class="chart-controls">
+            <label for="windowSize">趋势图时间窗口：</label>
+            <select id="windowSize">
+                <option value="60">1 分钟</option>
+                <option value="600">10 分钟</option>
+                <option value="3600" selected>1 小时</option>
+            </select>
+        </div>
+        <div class="tips">说明：浏览器内存依赖 `performance.memory`，仅部分 Chromium 内核浏览器支持；浏览器 CPU
+            为基于事件循环空闲度的近似值。
+        </div>
+    </section>
+
+    <div class="grid">
+        <section class="card">
+            <h2>SSE 通道</h2>
+            <div class="status" id="sseStatus">状态：未连接</div>
+            <div class="metrics" id="sseMetrics"></div>
+            <div class="chart-panel">
+                <div class="chart-header">
+                    <div class="chart-meta">
+                        <span>内存变化趋势</span>
+                        <div class="legend">
+                            <span class="legend-item"><span class="legend-dot server"></span>服务端内存</span>
+                            <span class="legend-item"><span class="legend-dot browser"></span>浏览器内存</span>
+                        </div>
+                        <span class="axis-cap" id="sseAxisCap">历史峰值：服务端 0 B / 浏览器 0 B</span>
+                    </div>
+                </div>
+                <canvas class="chart-canvas" id="sseMemoryChart"></canvas>
+            </div>
+            <div class="stream" id="sseStream">等待数据...</div>
+        </section>
+
+        <section class="card">
+            <h2>WebSocket 通道</h2>
+            <div class="status" id="wsStatus">状态：未连接</div>
+            <div class="metrics" id="wsMetrics"></div>
+            <div class="chart-panel">
+                <div class="chart-header">
+                    <div class="chart-meta">
+                        <span>内存变化趋势</span>
+                        <div class="legend">
+                            <span class="legend-item"><span class="legend-dot server"></span>服务端内存</span>
+                            <span class="legend-item"><span class="legend-dot browser"></span>浏览器内存</span>
+                        </div>
+                        <span class="axis-cap" id="wsAxisCap">历史峰值：服务端 0 B / 浏览器 0 B</span>
+                    </div>
+                </div>
+                <canvas class="chart-canvas" id="wsMemoryChart"></canvas>
+            </div>
+            <div class="stream" id="wsStream">等待数据...</div>
+        </section>
+    </div>
+</div>
+
+<script>
+    const pointCountInput = document.getElementById("pointCount");
+    const sseStatus = document.getElementById("sseStatus");
+    const wsStatus = document.getElementById("wsStatus");
+    const sseMetrics = document.getElementById("sseMetrics");
+    const wsMetrics = document.getElementById("wsMetrics");
+    const sseStream = document.getElementById("sseStream");
+    const wsStream = document.getElementById("wsStream");
+    const sseMemoryChart = document.getElementById("sseMemoryChart");
+    const wsMemoryChart = document.getElementById("wsMemoryChart");
+    const sseAxisCap = document.getElementById("sseAxisCap");
+    const wsAxisCap = document.getElementById("wsAxisCap");
+    const windowSizeSelect = document.getElementById("windowSize");
+
+    let eventSource = null;
+    let websocket = null;
+    let browserCpuPercent = 0;
+    let lastLoopCheck = performance.now();
+    let maxHistorySize = Number(windowSizeSelect.value);
+    const chartState = {
+        sse: [],
+        websocket: []
+    };
+
+    /**
+     * 获取页面中输入的测点数量。
+     * @returns {number}
+     */
+    function getPointCount() {
+        const value = Number(pointCountInput.value);
+        if (Number.isNaN(value)) {
+            return 5;
+        }
+        return Math.max(1, value);
+    }
+
+    /**
+     * 将字节数格式化成易读字符串。
+     * @param {number|null|undefined} bytes 字节数
+     * @returns {string}
+     */
+    function formatBytes(bytes) {
+        if (!bytes && bytes !== 0) {
+            return "N/A";
+        }
+        const units = ["B", "KB", "MB", "GB"];
+        let size = bytes;
+        let unitIndex = 0;
+        while (size >= 1024 && unitIndex < units.length - 1) {
+            size /= 1024;
+            unitIndex += 1;
+        }
+        return `${size.toFixed(2)} ${units[unitIndex]}`;
+    }
+
+    /**
+     * 将图表纵轴上限格式化为紧凑文本。
+     * @param {number} bytes 字节数
+     * @returns {string}
+     */
+    function formatCompactBytes(bytes) {
+        if (!bytes) {
+            return "0";
+        }
+        const units = ["B", "KB", "MB", "GB", "TB"];
+        let size = bytes;
+        let unitIndex = 0;
+        while (size >= 1024 && unitIndex < units.length - 1) {
+            size /= 1024;
+            unitIndex += 1;
+        }
+        return `${size.toFixed(size >= 100 ? 0 : 1)} ${units[unitIndex]}`;
+    }
+
+    /**
+     * 将毫秒数格式化为中文时长。
+     * @param {number|null|undefined} millis 毫秒数
+     * @returns {string}
+     */
+    function formatDuration(millis) {
+        const safeMillis = Number(millis || 0);
+        if (safeMillis < 1000) {
+            return `${safeMillis} 毫秒`;
+        }
+        const seconds = safeMillis / 1000;
+        if (seconds < 60) {
+            return `${seconds.toFixed(2)} 秒`;
+        }
+        const minutes = Math.floor(seconds / 60);
+        const remainSeconds = seconds % 60;
+        return `${minutes} 分 ${remainSeconds.toFixed(1)} 秒`;
+    }
+
+    /**
+     * 将指标渲染到对应面板。
+     * @param {HTMLElement} container 容器
+     * @param {object} payload 推送数据
+     */
+    function renderMetrics(container, payload) {
+        const browserMetrics = collectBrowserMetrics();
+        const server = payload.serverMetrics || {};
+        container.innerHTML = `
+            <div class="metric"><div class="label">服务端 CPU</div><div class="value">${Number(server.processCpuLoadPercent || 0).toFixed(2)}%</div></div>
+            <div class="metric"><div class="label">服务端内存</div><div class="value">${formatBytes(server.usedHeapBytes)} / ${formatBytes(server.maxHeapBytes)}</div></div>
+            <div class="metric"><div class="label">浏览器 CPU</div><div class="value">${browserMetrics.cpuUsagePercent.toFixed(2)}%</div></div>
+            <div class="metric"><div class="label">浏览器内存</div><div class="value">${formatBytes(browserMetrics.usedMemoryBytes)} / ${formatBytes(browserMetrics.totalMemoryBytes)}</div></div>
+            <div class="metric"><div class="label">年轻代垃圾回收次数</div><div class="value">${Number(server.youngGenerationGarbageCollectionCount || 0)}</div></div>
+            <div class="metric"><div class="label">年轻代垃圾回收耗时</div><div class="value">${formatDuration(server.youngGenerationGarbageCollectionTimeMillis)}</div></div>
+            <div class="metric"><div class="label">老年代垃圾回收次数</div><div class="value">${Number(server.oldGenerationGarbageCollectionCount || 0)}</div></div>
+            <div class="metric"><div class="label">老年代垃圾回收耗时</div><div class="value">${formatDuration(server.oldGenerationGarbageCollectionTimeMillis)}</div></div>
+            <div class="metric"><div class="label">垃圾回收总次数</div><div class="value">${Number(server.totalGarbageCollectionCount || 0)}</div></div>
+            <div class="metric"><div class="label">垃圾回收总耗时</div><div class="value">${formatDuration(server.totalGarbageCollectionTimeMillis)}</div></div>
+        `;
+    }
+
+    /**
+     * 采集浏览器端指标。
+     * @returns {{cpuUsagePercent: number, usedMemoryBytes: number|null, totalMemoryBytes: number|null, logicalProcessors: number}}
+     */
+    function collectBrowserMetrics() {
+        const memory = performance.memory || null;
+        return {
+            cpuUsagePercent: browserCpuPercent,
+            usedMemoryBytes: memory ? memory.usedJSHeapSize : null,
+            totalMemoryBytes: memory ? memory.jsHeapSizeLimit : null,
+            logicalProcessors: navigator.hardwareConcurrency || 0
+        };
+    }
+
+    /**
+     * 记录最新数据包。
+     * @param {HTMLElement} container 文本容器
+     * @param {object} payload 推送数据
+     */
+    function renderPayload(container, payload) {
+        const summary = {
+            channel: payload.channel,
+            timestamp: payload.timestamp,
+            pointCount: payload.pointCount,
+            points: payload.points,
+            browserMetrics: collectBrowserMetrics(),
+            serverMetrics: payload.serverMetrics
+        };
+        container.textContent = JSON.stringify(summary, null, 2);
+    }
+
+    /**
+     * 保存内存历史并重绘折线图。
+     * @param {"sse"|"websocket"} channel 通道名称
+     * @param {HTMLCanvasElement} canvas 画布
+     * @param {object} payload 推送数据
+     */
+    function updateMemoryChart(channel, canvas, payload) {
+        const browserMetrics = collectBrowserMetrics();
+        const history = chartState[channel];
+        history.push({
+            server: Number(payload.serverMetrics?.usedHeapBytes || 0),
+            browser: Number(browserMetrics.usedMemoryBytes || 0)
+        });
+        if (history.length > maxHistorySize) {
+            history.shift();
+        }
+        const axisCap = channel === "sse" ? sseAxisCap : wsAxisCap;
+        drawMemoryChart(canvas, history, axisCap);
+    }
+
+    /**
+     * 按当前窗口大小裁剪历史数据，并刷新图表。
+     */
+    function applyWindowSize() {
+        maxHistorySize = Number(windowSizeSelect.value);
+        chartState.sse = chartState.sse.slice(-maxHistorySize);
+        chartState.websocket = chartState.websocket.slice(-maxHistorySize);
+        drawMemoryChart(sseMemoryChart, chartState.sse, sseAxisCap);
+        drawMemoryChart(wsMemoryChart, chartState.websocket, wsAxisCap);
+    }
+
+    /**
+     * 绘制服务端 / 浏览器内存折线图。
+     * 纵轴会根据当前历史最大值自适应调整。
+     *
+     * @param {HTMLCanvasElement} canvas 画布
+     * @param {Array<{server:number,browser:number}>} history 历史数据
+     * @param {HTMLElement} axisCapElement 纵轴上限说明元素
+     */
+    function drawMemoryChart(canvas, history, axisCapElement) {
+        const rect = canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        const width = Math.max(320, Math.floor(rect.width || canvas.clientWidth || 320));
+        const height = 220;
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        const ctx = canvas.getContext("2d");
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, width, height);
+
+        const padding = {top: 20, right: 16, bottom: 28, left: 56};
+        const chartWidth = width - padding.left - padding.right;
+        const chartHeight = height - padding.top - padding.bottom;
+        const values = history.flatMap(item => [item.server, item.browser]).filter(value => value > 0);
+        const rawMax = values.length ? Math.max(...values) : 1;
+        const yMax = normalizeAxisMax(rawMax);
+        const peakServer = history.length ? Math.max(...history.map(item => item.server)) : 0;
+        const peakBrowser = history.length ? Math.max(...history.map(item => item.browser)) : 0;
+        axisCapElement.textContent =
+            `历史峰值：服务端 ${formatCompactBytes(peakServer)} / 浏览器 ${formatCompactBytes(peakBrowser)}`;
+        const yTicks = 4;
+
+        ctx.strokeStyle = "rgba(148, 163, 184, 0.28)";
+        ctx.lineWidth = 1;
+        ctx.fillStyle = "#64748b";
+        ctx.font = "12px Segoe UI";
+
+        for (let tick = 0; tick <= yTicks; tick += 1) {
+            const ratio = tick / yTicks;
+            const y = padding.top + chartHeight - chartHeight * ratio;
+            ctx.beginPath();
+            ctx.moveTo(padding.left, y);
+            ctx.lineTo(width - padding.right, y);
+            ctx.stroke();
+            ctx.fillText(formatCompactBytes(yMax * ratio), 8, y + 4);
+        }
+
+        ctx.strokeStyle = "rgba(148, 163, 184, 0.38)";
+        ctx.beginPath();
+        ctx.moveTo(padding.left, padding.top);
+        ctx.lineTo(padding.left, height - padding.bottom);
+        ctx.lineTo(width - padding.right, height - padding.bottom);
+        ctx.stroke();
+
+        if (!history.length) {
+            ctx.fillStyle = "#64748b";
+            ctx.fillText("等待内存数据...", padding.left + 12, padding.top + chartHeight / 2);
+            return;
+        }
+
+        drawSeries(ctx, history.map(item => item.server), yMax, padding, chartWidth, chartHeight, "#2563eb");
+        drawSeries(ctx, history.map(item => item.browser), yMax, padding, chartWidth, chartHeight, "#f59e0b");
+
+        ctx.fillStyle = "#64748b";
+        ctx.fillText(`0`, padding.left - 6, height - 8);
+        ctx.fillText(`最近 ${history.length} 次采样`, width - 120, height - 8);
+    }
+
+    /**
+     * 将原始最大值归一到更适合读图的坐标上限。
+     * @param {number} rawMax 原始最大值
+     * @returns {number}
+     */
+    function normalizeAxisMax(rawMax) {
+        if (rawMax <= 1) {
+            return 1;
+        }
+        const exponent = Math.floor(Math.log10(rawMax));
+        const magnitude = 10 ** exponent;
+        const normalized = rawMax / magnitude;
+        let factor = 1;
+        if (normalized > 5) {
+            factor = 10;
+        } else if (normalized > 2) {
+            factor = 5;
+        } else if (normalized > 1) {
+            factor = 2;
+        }
+        return factor * magnitude;
+    }
+
+    /**
+     * 绘制单条折线。
+     * @param {CanvasRenderingContext2D} ctx 绘图上下文
+     * @param {number[]} values 序列值
+     * @param {number} yMax 纵轴上限
+     * @param {{top:number,right:number,bottom:number,left:number}} padding 内边距
+     * @param {number} chartWidth 图宽
+     * @param {number} chartHeight 图高
+     * @param {string} color 折线颜色
+     */
+    function drawSeries(ctx, values, yMax, padding, chartWidth, chartHeight, color) {
+        if (!values.length) {
+            return;
+        }
+        const stepX = values.length === 1 ? 0 : chartWidth / (values.length - 1);
+        ctx.beginPath();
+        values.forEach((value, index) => {
+            const x = padding.left + stepX * index;
+            const y = padding.top + chartHeight - (Math.min(value, yMax) / yMax) * chartHeight;
+            if (index === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        });
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+    }
+
+    /**
+     * 启动 SSE 演示。
+     */
+    function startSse() {
+        stopSse();
+        const count = getPointCount();
+        eventSource = new EventSource(`/api/telemetry/sse?points=${count}`);
+        sseStatus.textContent = `状态：SSE 已连接，N = ${count}`;
+        eventSource.addEventListener("telemetry", (event) => {
+            const payload = JSON.parse(event.data);
+            renderMetrics(sseMetrics, payload);
+            updateMemoryChart("sse", sseMemoryChart, payload);
+            renderPayload(sseStream, payload);
+        });
+        eventSource.onerror = () => {
+            sseStatus.textContent = "状态：SSE 连接异常或已断开";
+        };
+    }
+
+    /**
+     * 停止 SSE 演示。
+     */
+    function stopSse() {
+        if (eventSource) {
+            eventSource.close();
+            eventSource = null;
+        }
+        sseStatus.textContent = "状态：SSE 已停止";
+    }
+
+    /**
+     * 启动 WebSocket 演示。
+     */
+    function startWebSocket() {
+        const count = getPointCount();
+        if (!websocket || websocket.readyState > 1) {
+            const protocol = location.protocol === "https:" ? "wss" : "ws";
+            websocket = new WebSocket(`${protocol}://${location.host}/ws/telemetry`);
+            websocket.onopen = () => {
+                wsStatus.textContent = `状态：WebSocket 已连接，N = ${count}`;
+                websocket.send(JSON.stringify({action: "start", points: count}));
+            };
+            websocket.onmessage = (event) => {
+                const payload = JSON.parse(event.data);
+                renderMetrics(wsMetrics, payload);
+                updateMemoryChart("websocket", wsMemoryChart, payload);
+                renderPayload(wsStream, payload);
+            };
+            websocket.onclose = () => {
+                wsStatus.textContent = "状态：WebSocket 已关闭";
+            };
+            websocket.onerror = () => {
+                wsStatus.textContent = "状态：WebSocket 连接异常";
+            };
+            return;
+        }
+        websocket.send(JSON.stringify({action: "start", points: count}));
+        wsStatus.textContent = `状态：WebSocket 已连接，N = ${count}`;
+    }
+
+    /**
+     * 停止 WebSocket 推送。
+     */
+    function stopWebSocket() {
+        if (websocket && websocket.readyState === WebSocket.OPEN) {
+            websocket.send(JSON.stringify({action: "stop"}));
+        }
+        wsStatus.textContent = "状态：WebSocket 已停止推送";
+    }
+
+    /**
+     * 通过定时漂移粗略估算浏览器主线程占用。
+     */
+    function monitorBrowserCpu() {
+        const now = performance.now();
+        const elapsed = now - lastLoopCheck;
+        const lag = Math.max(0, elapsed - 1000);
+        browserCpuPercent = Math.min(100, (lag / 1000) * 100);
+        lastLoopCheck = now;
+    }
+
+    document.getElementById("startSseBtn").addEventListener("click", startSse);
+    document.getElementById("stopSseBtn").addEventListener("click", stopSse);
+    document.getElementById("startWsBtn").addEventListener("click", startWebSocket);
+    document.getElementById("stopWsBtn").addEventListener("click", stopWebSocket);
+    windowSizeSelect.addEventListener("change", applyWindowSize);
+
+    drawMemoryChart(sseMemoryChart, chartState.sse, sseAxisCap);
+    drawMemoryChart(wsMemoryChart, chartState.websocket, wsAxisCap);
+    setInterval(monitorBrowserCpu, 1000);
+    window.addEventListener("resize", () => {
+        drawMemoryChart(sseMemoryChart, chartState.sse, sseAxisCap);
+        drawMemoryChart(wsMemoryChart, chartState.websocket, wsAxisCap);
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+server:
+  port: 1125
+
+spring:
+  application:
+    name: sse-server-1125
