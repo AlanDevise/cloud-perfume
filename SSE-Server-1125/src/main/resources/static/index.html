@@ -262,11 +262,13 @@
 <div class="page">
     <section class="hero">
         <h1>SSE / WebSocket 测点推送示例</h1>
-        <p>页面可手动指定每次推送的测点数量 N。服务端每秒生成一组随机整数测点，分别通过 SSE 和 WebSocket
-            推送到当前页面；同时展示服务端与浏览器的 CPU / 内存情况。</p>
+        <p>页面可分别控制单连接每秒推送的测点数量 `countOfPoint` 与并发连接数 `countOfConn`。服务端每秒生成一组随机整数测点，
+            分别通过 SSE 和 WebSocket 推送到当前页面；同时展示服务端与浏览器的 CPU / 内存情况，便于比较两种协议在连接数变化下的内存影响。</p>
         <div class="controls">
-            <label for="pointCount">测点数量 N：</label>
-            <input id="pointCount" type="number" min="1" value="5">
+            <label for="countOfPoint">每连接测点数 countOfPoint：</label>
+            <input id="countOfPoint" type="number" min="1" value="5">
+            <label for="countOfConn">并发连接数 countOfConn：</label>
+            <input id="countOfConn" type="number" min="1" value="1">
             <button class="sse-btn" id="startSseBtn">启动 SSE</button>
             <button class="stop-btn" id="stopSseBtn">停止 SSE</button>
             <button class="ws-btn" id="startWsBtn">启动 WebSocket</button>
@@ -329,7 +331,8 @@
 </div>
 
 <script>
-    const pointCountInput = document.getElementById("pointCount");
+    const countOfPointInput = document.getElementById("countOfPoint");
+    const countOfConnInput = document.getElementById("countOfConn");
     const sseStatus = document.getElementById("sseStatus");
     const wsStatus = document.getElementById("wsStatus");
     const sseMetrics = document.getElementById("sseMetrics");
@@ -342,24 +345,40 @@
     const wsAxisCap = document.getElementById("wsAxisCap");
     const windowSizeSelect = document.getElementById("windowSize");
 
-    let eventSource = null;
-    let websocket = null;
+    let eventSources = [];
+    let webSockets = [];
     let browserCpuPercent = 0;
     let lastLoopCheck = performance.now();
     let maxHistorySize = Number(windowSizeSelect.value);
+    const connectionConfig = {
+        sse: {countOfPoint: 5, countOfConn: 0},
+        websocket: {countOfPoint: 5, countOfConn: 0}
+    };
     const chartState = {
         sse: [],
         websocket: []
     };
 
     /**
-     * 获取页面中输入的测点数量。
+     * 获取页面中输入的每连接测点数量。
      * @returns {number}
      */
-    function getPointCount() {
-        const value = Number(pointCountInput.value);
+    function getCountOfPoint() {
+        const value = Number(countOfPointInput.value);
         if (Number.isNaN(value)) {
             return 5;
+        }
+        return Math.max(1, value);
+    }
+
+    /**
+     * 获取页面中输入的并发连接数。
+     * @returns {number}
+     */
+    function getCountOfConn() {
+        const value = Number(countOfConnInput.value);
+        if (Number.isNaN(value)) {
+            return 1;
         }
         return Math.max(1, value);
     }
@@ -573,6 +592,52 @@
     }
 
     /**
+     * 获取当前 SSE 连接概况。
+     * @returns {{open:number, connecting:number, total:number}}
+     */
+    function getSseConnectionSummary() {
+        return {
+            open: eventSources.filter(source => source.readyState === EventSource.OPEN).length,
+            connecting: eventSources.filter(source => source.readyState === EventSource.CONNECTING).length,
+            total: eventSources.length
+        };
+    }
+
+    /**
+     * 获取当前 WebSocket 连接概况。
+     * @returns {{open:number, connecting:number, total:number}}
+     */
+    function getWebSocketConnectionSummary() {
+        return {
+            open: webSockets.filter(socket => socket.readyState === WebSocket.OPEN).length,
+            connecting: webSockets.filter(socket => socket.readyState === WebSocket.CONNECTING).length,
+            total: webSockets.length
+        };
+    }
+
+    /**
+     * 刷新 SSE 状态文本。
+     * @param {string} prefix 状态前缀
+     */
+    function refreshSseStatus(prefix = "状态") {
+        const summary = getSseConnectionSummary();
+        const config = connectionConfig.sse;
+        sseStatus.textContent =
+            `${prefix}：SSE 已打开 ${summary.open}/${summary.total}，连接中 ${summary.connecting}，countOfPoint = ${config.countOfPoint}，countOfConn = ${config.countOfConn}`;
+    }
+
+    /**
+     * 刷新 WebSocket 状态文本。
+     * @param {string} prefix 状态前缀
+     */
+    function refreshWebSocketStatus(prefix = "状态") {
+        const summary = getWebSocketConnectionSummary();
+        const config = connectionConfig.websocket;
+        wsStatus.textContent =
+            `${prefix}：WebSocket 已打开 ${summary.open}/${summary.total}，连接中 ${summary.connecting}，countOfPoint = ${config.countOfPoint}，countOfConn = ${config.countOfConn}`;
+    }
+
+    /**
      * 将原始最大值归一到更适合读图的坐标上限。
      * @param {number} rawMax 原始最大值
      * @returns {number}
@@ -630,69 +695,87 @@
      */
     function startSse() {
         stopSse();
-        const count = getPointCount();
-        eventSource = new EventSource(`/api/telemetry/sse?points=${count}`);
-        sseStatus.textContent = `状态：SSE 已连接，N = ${count}`;
-        eventSource.addEventListener("telemetry", (event) => {
-            const payload = JSON.parse(event.data);
-            renderMetrics(sseMetrics, payload);
-            updateMemoryChart("sse", sseMemoryChart, payload);
-            renderPayload(sseStream, payload);
+        const countOfPoint = getCountOfPoint();
+        const countOfConn = getCountOfConn();
+        connectionConfig.sse = {countOfPoint, countOfConn};
+        sseStatus.textContent = `状态：正在建立 ${countOfConn} 条 SSE 连接，countOfPoint = ${countOfPoint}`;
+
+        eventSources = Array.from({length: countOfConn}, () => {
+            const source = new EventSource(`/api/telemetry/sse?countOfPoint=${countOfPoint}`);
+            source.onopen = () => refreshSseStatus("状态");
+            source.addEventListener("telemetry", (event) => {
+                const payload = JSON.parse(event.data);
+                renderMetrics(sseMetrics, payload);
+                updateMemoryChart("sse", sseMemoryChart, payload);
+                renderPayload(sseStream, payload);
+                refreshSseStatus("状态");
+            });
+            source.onerror = () => {
+                refreshSseStatus("状态");
+            };
+            return source;
         });
-        eventSource.onerror = () => {
-            sseStatus.textContent = "状态：SSE 连接异常或已断开";
-        };
     }
 
     /**
      * 停止 SSE 演示。
      */
     function stopSse() {
-        if (eventSource) {
-            eventSource.close();
-            eventSource = null;
-        }
-        sseStatus.textContent = "状态：SSE 已停止";
+        eventSources.forEach(source => source.close());
+        eventSources = [];
+        connectionConfig.sse = {countOfPoint: getCountOfPoint(), countOfConn: 0};
+        sseStatus.textContent = "状态：SSE 已停止，countOfConn = 0";
     }
 
     /**
      * 启动 WebSocket 演示。
      */
     function startWebSocket() {
-        const count = getPointCount();
-        if (!websocket || websocket.readyState > 1) {
-            const protocol = location.protocol === "https:" ? "wss" : "ws";
-            websocket = new WebSocket(`${protocol}://${location.host}/ws/telemetry`);
-            websocket.onopen = () => {
-                wsStatus.textContent = `状态：WebSocket 已连接，N = ${count}`;
-                websocket.send(JSON.stringify({action: "start", points: count}));
+        stopWebSocket();
+        const countOfPoint = getCountOfPoint();
+        const countOfConn = getCountOfConn();
+        const protocol = location.protocol === "https:" ? "wss" : "ws";
+        connectionConfig.websocket = {countOfPoint, countOfConn};
+        wsStatus.textContent = `状态：正在建立 ${countOfConn} 条 WebSocket 连接，countOfPoint = ${countOfPoint}`;
+
+        webSockets = Array.from({length: countOfConn}, () => {
+            const socket = new WebSocket(`${protocol}://${location.host}/ws/telemetry`);
+            socket.onopen = () => {
+                refreshWebSocketStatus("状态");
+                socket.send(JSON.stringify({action: "start", countOfPoint}));
             };
-            websocket.onmessage = (event) => {
+            socket.onmessage = (event) => {
                 const payload = JSON.parse(event.data);
                 renderMetrics(wsMetrics, payload);
                 updateMemoryChart("websocket", wsMemoryChart, payload);
                 renderPayload(wsStream, payload);
+                refreshWebSocketStatus("状态");
             };
-            websocket.onclose = () => {
-                wsStatus.textContent = "状态：WebSocket 已关闭";
+            socket.onclose = () => {
+                refreshWebSocketStatus("状态");
             };
-            websocket.onerror = () => {
-                wsStatus.textContent = "状态：WebSocket 连接异常";
+            socket.onerror = () => {
+                refreshWebSocketStatus("状态");
             };
-            return;
-        }
-        websocket.send(JSON.stringify({action: "start", points: count}));
-        wsStatus.textContent = `状态：WebSocket 已连接，N = ${count}`;
+            return socket;
+        });
     }
 
     /**
      * 停止 WebSocket 推送。
      */
     function stopWebSocket() {
-        if (websocket && websocket.readyState === WebSocket.OPEN) {
-            websocket.send(JSON.stringify({action: "stop"}));
-        }
-        wsStatus.textContent = "状态：WebSocket 已停止推送";
+        webSockets.forEach(socket => {
+            if (socket.readyState === WebSocket.OPEN) {
+                socket.send(JSON.stringify({action: "stop"}));
+            }
+            if (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING) {
+                socket.close();
+            }
+        });
+        webSockets = [];
+        connectionConfig.websocket = {countOfPoint: getCountOfPoint(), countOfConn: 0};
+        wsStatus.textContent = "状态：WebSocket 已停止，countOfConn = 0";
     }
 
     /**

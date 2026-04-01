@@ -48,8 +48,8 @@ public class TelemetryWebSocketHandler extends TextWebSocketHandler {
             telemetryStreamService.stopWebSocketStream(session.getId());
             return;
         }
-        int points = command.getPoints() == null ? 5 : command.getPoints();
-        telemetryStreamService.updateWebSocketPointCount(session.getId(), points);
+        int countOfPoint = command.getCountOfPoint() == null ? 5 : command.getCountOfPoint();
+        telemetryStreamService.updateWebSocketPointCount(session.getId(), countOfPoint);
         telemetryStreamService.scheduleWebSocketStream(session.getId(), () -> sendPayload(session));
     }
 

@@ -6,7 +6,7 @@ package com.alandevise.sse.model;
 public class WebSocketCommand {
 
     private String action;
-    private Integer points;
+    private Integer countOfPoint;
 
     public String getAction() {
         return action;
@@ -16,11 +16,11 @@ public class WebSocketCommand {
         this.action = action;
     }
 
-    public Integer getPoints() {
-        return points;
+    public Integer getCountOfPoint() {
+        return countOfPoint;
     }
 
-    public void setPoints(Integer points) {
-        this.points = points;
+    public void setCountOfPoint(Integer countOfPoint) {
+        this.countOfPoint = countOfPoint;
     }
 }

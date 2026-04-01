@@ -23,11 +23,11 @@ public class TelemetrySseController {
     /**
      * 为当前浏览器创建 SSE 长连接。
      *
-     * @param points 测点数量
+     * @param countOfPoint 每条连接单次推送的测点数量
      * @return SSE 发射器
      */
     @GetMapping(path = "/sse", produces = "text/event-stream")
-    public SseEmitter subscribe(@RequestParam(defaultValue = "5") int points) {
-        return telemetryStreamService.createSseEmitter(points);
+    public SseEmitter subscribe(@RequestParam(defaultValue = "5") int countOfPoint) {
+        return telemetryStreamService.createSseEmitter(countOfPoint);
     }
 }

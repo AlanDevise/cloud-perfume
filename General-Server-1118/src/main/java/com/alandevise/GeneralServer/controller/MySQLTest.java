@@ -820,7 +820,7 @@ public class MySQLTest {
 
         @Override
         public void run() {
-            countMap.putIfAbsent(key, value);
+            countMap.putIfAbsent(key, 0);
             countMap.merge(key, 1, Integer::sum);
         }
 
