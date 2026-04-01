@@ -4,6 +4,8 @@ import com.alandevise.sse.model.TelemetryPayload;
 import com.alandevise.sse.model.TelemetryPoint;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.annotation.PreDestroy;
 import java.io.IOException;
@@ -27,14 +29,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class TelemetryStreamService {
 
     private static final long SSE_TIMEOUT_MS = 0L;
+    private static final String FULL_STREAM_MODE = "full";
+    private static final String PROTOCOL_ONLY_STREAM_MODE = "protocol-only";
 
     private final Map<String, SseClientContext> sseClients = new ConcurrentHashMap<>();
     private final Map<String, WebSocketClientContext> webSocketClients = new ConcurrentHashMap<>();
+    private final Map<Integer, String> protocolOnlyPayloadCache = new ConcurrentHashMap<>();
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(4);
     private final SystemMetricsService systemMetricsService;
+    private final ObjectMapper objectMapper;
 
-    public TelemetryStreamService(SystemMetricsService systemMetricsService) {
+    public TelemetryStreamService(SystemMetricsService systemMetricsService, ObjectMapper objectMapper) {
         this.systemMetricsService = systemMetricsService;
+        this.objectMapper = objectMapper;
     }
 
     /**
@@ -44,10 +51,21 @@ public class TelemetryStreamService {
      * @return SSE 发射器
      */
     public SseEmitter createSseEmitter(int pointCount) {
+        return createSseEmitter(pointCount, FULL_STREAM_MODE);
+    }
+
+    /**
+     * 创建 SSE 发射器，并按照指定模式开始推送。
+     *
+     * @param pointCount 测点数量
+     * @param streamMode 推送模式
+     * @return SSE 发射器
+     */
+    public SseEmitter createSseEmitter(int pointCount, String streamMode) {
         int sanitizedPointCount = sanitizePointCount(pointCount);
         String clientId = UUID.randomUUID().toString();
         SseEmitter emitter = new SseEmitter(SSE_TIMEOUT_MS);
-        SseClientContext context = new SseClientContext(emitter, sanitizedPointCount);
+        SseClientContext context = new SseClientContext(emitter, sanitizedPointCount, normalizeStreamMode(streamMode));
         sseClients.put(clientId, context);
 
         emitter.onCompletion(() -> stopSseClient(clientId));
@@ -76,8 +94,20 @@ public class TelemetryStreamService {
      * @param pointCount 测点数量
      */
     public void updateWebSocketPointCount(String sessionId, int pointCount) {
+        updateWebSocketPointCount(sessionId, pointCount, FULL_STREAM_MODE);
+    }
+
+    /**
+     * 更新 WebSocket 连接的推送参数。
+     *
+     * @param sessionId   会话标识
+     * @param pointCount  测点数量
+     * @param streamMode  推送模式
+     */
+    public void updateWebSocketPointCount(String sessionId, int pointCount, String streamMode) {
         WebSocketClientContext context = webSocketClients.computeIfAbsent(sessionId, key -> new WebSocketClientContext());
         context.setPointCount(sanitizePointCount(pointCount));
+        context.setStreamMode(normalizeStreamMode(streamMode));
         context.setStreaming(true);
     }
 
@@ -129,6 +159,17 @@ public class TelemetryStreamService {
     }
 
     /**
+     * 获取指定 WebSocket 会话的推送模式。
+     *
+     * @param sessionId 会话标识
+     * @return 推送模式
+     */
+    public String getWebSocketStreamMode(String sessionId) {
+        WebSocketClientContext context = webSocketClients.get(sessionId);
+        return context == null ? FULL_STREAM_MODE : context.getStreamMode();
+    }
+
+    /**
      * 生成一次数据包。
      *
      * @param channel    通道名称
@@ -153,6 +194,17 @@ public class TelemetryStreamService {
     }
 
     /**
+     * 构造协议层对比实验使用的固定文本 payload。
+     *
+     * @param pointCount 测点数量
+     * @return 固定文本 payload
+     */
+    public String buildProtocolOnlyPayload(int pointCount) {
+        int sanitizedPointCount = sanitizePointCount(pointCount);
+        return protocolOnlyPayloadCache.computeIfAbsent(sanitizedPointCount, this::createProtocolOnlyPayload);
+    }
+
+    /**
      * 发送一帧 SSE 数据并安排下一次推送。
      *
      * @param clientId 客户端标识
@@ -163,9 +215,12 @@ public class TelemetryStreamService {
             return;
         }
         try {
+            Object payload = PROTOCOL_ONLY_STREAM_MODE.equals(context.getStreamMode())
+                    ? buildProtocolOnlyPayload(context.getPointCount())
+                    : buildPayload("sse", context.getPointCount());
             context.getEmitter().send(SseEmitter.event()
                     .name("telemetry")
-                    .data(buildPayload("sse", context.getPointCount())));
+                    .data(payload));
         } catch (IOException ex) {
             stopSseClient(clientId);
         }
@@ -195,17 +250,53 @@ public class TelemetryStreamService {
     }
 
     /**
+     * 规范化推送模式。
+     *
+     * @param streamMode 原始模式
+     * @return 规范后的模式
+     */
+    private String normalizeStreamMode(String streamMode) {
+        return PROTOCOL_ONLY_STREAM_MODE.equalsIgnoreCase(streamMode)
+                ? PROTOCOL_ONLY_STREAM_MODE
+                : FULL_STREAM_MODE;
+    }
+
+    /**
+     * 生成固定 payload 对应的 JSON 字符串，仅在首次命中时创建一次。
+     *
+     * @param pointCount 测点数量
+     * @return JSON 文本
+     */
+    private String createProtocolOnlyPayload(int pointCount) {
+        List<TelemetryPoint> points = new ArrayList<>(pointCount);
+        for (int index = 1; index <= pointCount; index++) {
+            points.add(new TelemetryPoint("P-" + index, index));
+        }
+
+        TelemetryPayload payload = new TelemetryPayload();
+        payload.setPointCount(pointCount);
+        payload.setPoints(points);
+        try {
+            return objectMapper.writeValueAsString(payload);
+        } catch (JsonProcessingException ex) {
+            throw new IllegalStateException("Failed to build protocol-only payload", ex);
+        }
+    }
+
+    /**
      * SSE 推送上下文。
      */
     private static final class SseClientContext {
         private final SseEmitter emitter;
         private final int pointCount;
+        private final String streamMode;
         private final AtomicBoolean active = new AtomicBoolean(true);
         private volatile ScheduledFuture<?> future;
 
-        private SseClientContext(SseEmitter emitter, int pointCount) {
+        private SseClientContext(SseEmitter emitter, int pointCount, String streamMode) {
             this.emitter = emitter;
             this.pointCount = pointCount;
+            this.streamMode = streamMode;
         }
 
         public SseEmitter getEmitter() {
@@ -214,6 +305,10 @@ public class TelemetryStreamService {
 
         public int getPointCount() {
             return pointCount;
+        }
+
+        public String getStreamMode() {
+            return streamMode;
         }
 
         public boolean isActive() {
@@ -240,6 +335,7 @@ public class TelemetryStreamService {
      */
     private static final class WebSocketClientContext {
         private volatile int pointCount = 5;
+        private volatile String streamMode = FULL_STREAM_MODE;
         private volatile boolean streaming;
         private volatile ScheduledFuture<?> future;
 
@@ -249,6 +345,14 @@ public class TelemetryStreamService {
 
         public void setPointCount(int pointCount) {
             this.pointCount = pointCount;
+        }
+
+        public String getStreamMode() {
+            return streamMode;
+        }
+
+        public void setStreamMode(String streamMode) {
+            this.streamMode = streamMode;
         }
 
         public boolean isStreaming() {

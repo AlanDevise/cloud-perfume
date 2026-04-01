@@ -30,4 +30,15 @@ public class TelemetrySseController {
     public SseEmitter subscribe(@RequestParam(defaultValue = "5") int countOfPoint) {
         return telemetryStreamService.createSseEmitter(countOfPoint);
     }
+
+    /**
+     * 为协议对比实验创建 SSE 长连接。
+     *
+     * @param countOfPoint 每条连接单次推送的测点数量
+     * @return SSE 发射器
+     */
+    @GetMapping(path = "/protocol/sse", produces = "text/event-stream")
+    public SseEmitter protocolOnlySubscribe(@RequestParam(defaultValue = "5") int countOfPoint) {
+        return telemetryStreamService.createSseEmitter(countOfPoint, "protocol-only");
+    }
 }

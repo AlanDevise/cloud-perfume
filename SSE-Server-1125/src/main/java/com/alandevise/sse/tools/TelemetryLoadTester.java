@@ -45,7 +45,7 @@ import java.util.concurrent.atomic.AtomicLong;
  *   --mode=websocket --baseUrl=http://127.0.0.1:1125 --countOfConn=1000 --countOfPoint=5 --durationSeconds=60
  *
  * java -cp "target/classes:$(cat cp.txt)" com.alandevise.sse.tools.TelemetryLoadTester \
- *   --mode=both --baseUrl=http://127.0.0.1:1125 --countOfConn=500 --countOfPoint=5 --durationSeconds=45
+ *   --mode=both --scenario=protocol-only --baseUrl=http://127.0.0.1:1125 --countOfConn=500 --countOfPoint=5 --durationSeconds=45
  * }</pre>
  */
 public class TelemetryLoadTester {
@@ -104,6 +104,7 @@ public class TelemetryLoadTester {
                 config.getCountOfPoint(),
                 config.getDurationSeconds(),
                 config.getReportIntervalSeconds());
+        System.out.printf("Scenario: %s%n", config.getScenario());
 
         poller.start();
         phase.start();
@@ -195,6 +196,7 @@ public class TelemetryLoadTester {
         private final int durationSeconds;
         private final int reportIntervalSeconds;
         private final int coolDownSeconds;
+        private final String scenario;
 
         private LoadTestConfig(LoadTestMode mode,
                                URI baseUrl,
@@ -202,7 +204,8 @@ public class TelemetryLoadTester {
                                int countOfPoint,
                                int durationSeconds,
                                int reportIntervalSeconds,
-                               int coolDownSeconds) {
+                               int coolDownSeconds,
+                               String scenario) {
             this.mode = mode;
             this.baseUrl = baseUrl;
             this.countOfConn = countOfConn;
@@ -210,6 +213,7 @@ public class TelemetryLoadTester {
             this.durationSeconds = durationSeconds;
             this.reportIntervalSeconds = reportIntervalSeconds;
             this.coolDownSeconds = coolDownSeconds;
+            this.scenario = scenario;
         }
 
         public static LoadTestConfig parse(String[] args) {
@@ -229,9 +233,10 @@ public class TelemetryLoadTester {
             int durationSeconds = parsePositiveInt(options.getOrDefault("durationSeconds", "60"), "durationSeconds");
             int reportIntervalSeconds = parsePositiveInt(options.getOrDefault("reportIntervalSeconds", "5"), "reportIntervalSeconds");
             int coolDownSeconds = parseNonNegativeInt(options.getOrDefault("coolDownSeconds", "5"), "coolDownSeconds");
+            String scenario = options.getOrDefault("scenario", "full");
 
             return new LoadTestConfig(mode, baseUrl, countOfConn, countOfPoint,
-                    durationSeconds, reportIntervalSeconds, coolDownSeconds);
+                    durationSeconds, reportIntervalSeconds, coolDownSeconds, scenario);
         }
 
         private static LoadTestMode parseMode(String rawMode) {
@@ -267,7 +272,7 @@ public class TelemetryLoadTester {
         private static String usage() {
             return "Usage: --mode=sse|websocket|both --baseUrl=http://127.0.0.1:1125 "
                     + "--countOfConn=500 --countOfPoint=5 --durationSeconds=60 "
-                    + "[--reportIntervalSeconds=5] [--coolDownSeconds=5]";
+                    + "[--reportIntervalSeconds=5] [--coolDownSeconds=5] [--scenario=full|protocol-only]";
         }
 
         public LoadTestMode getMode() {
@@ -296,6 +301,10 @@ public class TelemetryLoadTester {
 
         public int getCoolDownSeconds() {
             return coolDownSeconds;
+        }
+
+        public String getScenario() {
+            return scenario;
         }
     }
 
@@ -483,7 +492,10 @@ public class TelemetryLoadTester {
 
         @Override
         public void start() {
-            URI uri = config.getBaseUrl().resolve("/api/telemetry/sse?countOfPoint=" + config.getCountOfPoint());
+            String path = "protocol-only".equalsIgnoreCase(config.getScenario())
+                    ? "/api/telemetry/protocol/sse?countOfPoint="
+                    : "/api/telemetry/sse?countOfPoint=";
+            URI uri = config.getBaseUrl().resolve(path + config.getCountOfPoint());
             for (int i = 0; i < config.getCountOfConn(); i++) {
                 stats.onAttempt();
                 SseConnection connection = new SseConnection();
@@ -601,7 +613,8 @@ public class TelemetryLoadTester {
             URI wsUri = toWebSocketUri(config.getBaseUrl()).resolve("/ws/telemetry");
             for (int i = 0; i < config.getCountOfConn(); i++) {
                 stats.onAttempt();
-                WebSocketClient listener = new WebSocketClient(stats, config.getCountOfPoint(), stopped);
+                WebSocketClient listener = new WebSocketClient(
+                        stats, config.getCountOfPoint(), config.getScenario(), stopped);
                 clients.add(listener);
                 httpClient.newWebSocketBuilder()
                         .connectTimeout(CONNECT_TIMEOUT)
@@ -645,14 +658,16 @@ public class TelemetryLoadTester {
     private static final class WebSocketClient implements WebSocket.Listener {
         private final LoadStats stats;
         private final int countOfPoint;
+        private final String scenario;
         private final AtomicBoolean globalStopped;
         private final AtomicBoolean disconnected = new AtomicBoolean(false);
         private final StringBuilder messageBuffer = new StringBuilder();
         private volatile WebSocket webSocket;
 
-        private WebSocketClient(LoadStats stats, int countOfPoint, AtomicBoolean globalStopped) {
+        private WebSocketClient(LoadStats stats, int countOfPoint, String scenario, AtomicBoolean globalStopped) {
             this.stats = stats;
             this.countOfPoint = countOfPoint;
+            this.scenario = scenario;
             this.globalStopped = globalStopped;
         }
 
@@ -661,7 +676,9 @@ public class TelemetryLoadTester {
             this.webSocket = webSocket;
             stats.onConnect();
             webSocket.request(1);
-            webSocket.sendText("{\"action\":\"start\",\"countOfPoint\":" + countOfPoint + "}", true);
+            webSocket.sendText(
+                    "{\"action\":\"start\",\"countOfPoint\":" + countOfPoint + ",\"scenario\":\"" + scenario + "\"}",
+                    true);
         }
 
         @Override

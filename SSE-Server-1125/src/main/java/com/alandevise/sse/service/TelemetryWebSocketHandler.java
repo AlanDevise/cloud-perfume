@@ -49,7 +49,8 @@ public class TelemetryWebSocketHandler extends TextWebSocketHandler {
             return;
         }
         int countOfPoint = command.getCountOfPoint() == null ? 5 : command.getCountOfPoint();
-        telemetryStreamService.updateWebSocketPointCount(session.getId(), countOfPoint);
+        String scenario = command.getScenario();
+        telemetryStreamService.updateWebSocketPointCount(session.getId(), countOfPoint, scenario);
         telemetryStreamService.scheduleWebSocketStream(session.getId(), () -> sendPayload(session));
     }
 
@@ -87,7 +88,10 @@ public class TelemetryWebSocketHandler extends TextWebSocketHandler {
             return;
         }
         try {
-            String payload = objectMapper.writeValueAsString(
+            String payload = "protocol-only".equals(telemetryStreamService.getWebSocketStreamMode(session.getId()))
+                    ? telemetryStreamService.buildProtocolOnlyPayload(
+                    telemetryStreamService.getWebSocketPointCount(session.getId()))
+                    : objectMapper.writeValueAsString(
                     telemetryStreamService.buildPayload("websocket",
                             telemetryStreamService.getWebSocketPointCount(session.getId())));
             session.sendMessage(new TextMessage(payload));

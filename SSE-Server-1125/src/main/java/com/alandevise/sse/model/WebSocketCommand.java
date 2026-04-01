@@ -7,6 +7,7 @@ public class WebSocketCommand {
 
     private String action;
     private Integer countOfPoint;
+    private String scenario;
 
     public String getAction() {
         return action;
@@ -22,5 +23,13 @@ public class WebSocketCommand {
 
     public void setCountOfPoint(Integer countOfPoint) {
         this.countOfPoint = countOfPoint;
+    }
+
+    public String getScenario() {
+        return scenario;
+    }
+
+    public void setScenario(String scenario) {
+        this.scenario = scenario;
     }
 }
